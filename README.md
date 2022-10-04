@@ -9,7 +9,7 @@
 * <code>[Alexandru Irimia](https://github.com/alexandru-irimia)</code>
 * <code>[Filimon Danut-Dumitru](https://github.com/Danie83)</code>
 * <code>[Enia Vlad](https://github.com/Vlad-Enia)</code>
-* <code>[Lupu Cezar](https://github.com/cezaruss)</code>
+* <code>[Lupu Cezar-Justinian](https://github.com/cezaruss)</code>
 
 ## Links: 
 * Google Drive: https://drive.google.com/drive/folders/1fOQMC5bEe7NE353b8plB_wfglchu08Ej
