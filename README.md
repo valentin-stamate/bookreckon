@@ -1,6 +1,8 @@
 # BookReckon
 
-<img src="./assets/images/logo.png" />
+<p align="center">
+    <img src="./assets/images/logo.png" />
+</p>
 
 ## Coordinator
 * <code>[Adrian Iftene](https://github.com/adiftene1)</code>
@@ -14,6 +16,6 @@
 * <code>[Enia Vlad](https://github.com/Vlad-Enia)</code>
 * <code>[Lupu Cezar-Justinian](https://github.com/cezaruss)</code>
 
-## Links: 
+## Links:
 * Google Drive: https://drive.google.com/drive/folders/1fOQMC5bEe7NE353b8plB_wfglchu08Ej
 * ASANA Board: https://app.asana.com/0/1203097656530726/board
