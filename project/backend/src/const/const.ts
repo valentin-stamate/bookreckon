@@ -1,5 +1,14 @@
+import {User} from "../interface/interfaces";
+
 export const enum ResponseMessage {
 
+}
+
+export const MOCK_USER: User = {
+    username: "Cezar",
+    email: "cezarcez@outlook.com",
+    password: "parola",
+    preferences: ["action", "automotive"]
 }
 
 export const enum ContentType {
