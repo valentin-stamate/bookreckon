@@ -1,5 +1,7 @@
 # BookReckon
 
+<img src="./assets/images/logo.png" />
+
 ## Coordinator
 * <code>[Adrian Iftene](https://github.com/adiftene1)</code>
 * <code>[Ferucio Laurentiu Tiplea]()</code>
