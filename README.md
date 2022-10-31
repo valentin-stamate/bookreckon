@@ -15,6 +15,7 @@
 * <code>[Filimon Danut-Dumitru](https://github.com/Danie83)</code>
 * <code>[Enia Vlad](https://github.com/Vlad-Enia)</code>
 * <code>[Lupu Cezar-Justinian](https://github.com/cezaruss)</code>
+* <code>[Rosca Ionut](https://github.com/reloadedd)</code>
 
 ## Links:
 * Google Drive: https://drive.google.com/drive/folders/1fOQMC5bEe7NE353b8plB_wfglchu08Ej
