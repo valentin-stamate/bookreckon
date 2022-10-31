@@ -5,6 +5,13 @@ export interface User {
     preferences: string[];
 }
 
+export const MockUser: User = {
+    username: "Cezar",
+    email: "cezarcez@outlook.com",
+    password: "parola",
+    preferences: ["action", "automotive"]
+}
+
 export interface Book {
     name: string;
     genre: string;
