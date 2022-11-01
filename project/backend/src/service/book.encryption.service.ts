@@ -9,11 +9,11 @@ export class BookEncryption{
         return Promise.reject();
     }
 
-    static getEncryptionKey(): int{
+    static getEncryptionKey(): number {
         return 0;
     }
 
-    static getDecryptionKey(): int{
+    static getDecryptionKey(): number {
         return 0;
     }
 
