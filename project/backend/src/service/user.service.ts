@@ -21,8 +21,6 @@ export class UserService {
     }
 
     static async editUser(user: User): Promise<void> {
-        delete user.id;
-
         await UserModel.create({
             ...user
         });

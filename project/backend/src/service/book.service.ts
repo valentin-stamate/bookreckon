@@ -1,26 +1,67 @@
 import {Author, Book} from "../interface/interfaces";
+import {AuthorModel, BookModel} from "../database/models";
 
 export class BookService {
-    static getBook():Promise<Book>{
-        return Promise.reject();
+    static async getBook(id: number): Promise<Book>{
+        return (await BookModel.findOne({
+            where: {
+                id: id,
+            }
+        }))?.toJSON() as Book;
     }
-    static addBook(book: Book): Promise<void> {
-        return Promise.reject();
+    static async addBook(book: Book): Promise<void> {
+        delete book.id;
+
+        await BookModel.create({
+            ...book
+        });
     }
 
-    static editBook(book: Book): Promise<void> {
-        return Promise.reject();
+    static async editBook(book: Book): Promise<void> {
+        await BookModel.create({
+            ...book
+        });
     }
 
-    static deleteBook(book: Book): Promise<void> {
-        return Promise.reject();
+    static async deleteBook(book: Book): Promise<void> {
+        await BookModel.destroy({
+            where: {
+                id: book.id,
+            }
+        });
     }
 
-    static addAuthor(book: Book, author: Author): Promise<void> {
-        return Promise.reject();
+    static async addAuthor(book: Book, author: Author): Promise<void> {
+        const bookModel = await BookModel.findOne({
+            where: {
+                id: book.id,
+            }
+        });
+
+        const authorModel = await AuthorModel.findOne({
+            where: {
+                id: author.id,
+            }
+        });
+
+        // @ts-ignore
+        bookModel.addAuthorModel(authorModel);
     }
 
-    static removeAuthor(book: Book, author: Author): Promise<void> {
-        return Promise.reject();
+    static async removeAuthor(book: Book, author: Author): Promise<void> {
+        const bookModel = await BookModel.findOne({
+            where: {
+                id: book.id,
+            }
+        });
+
+        const authorModel = await AuthorModel.findOne({
+            where: {
+                id: author.id,
+            }
+        });
+
+        // @ts-ignore
+        bookModel.destroyAuthorModel(authorModel);
     }
 }

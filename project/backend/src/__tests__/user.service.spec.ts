@@ -4,15 +4,16 @@ import {PreferenceModel, UserModel} from "../database/models";
 import {Preference} from "../interface/interfaces";
 
 jest.mock('../database/models');
+
 const mockedUserModel = jest.mocked(UserModel);
 const mockedPreferenceModel = jest.mocked(PreferenceModel);
 
 const userFindOneMock = jest.fn(() => Promise.resolve());
 const userCreateMock = jest.fn(() => Promise.resolve());
 const userDestroyMock = jest.fn(() => Promise.resolve());
-const userAddPreferenceDestroyMock = jest.fn(() => Promise.resolve());
+// const userAddPreferenceDestroyMock = jest.fn(() => Promise.resolve());
 
-const preferenceFindOneMock = jest.fn(() => Promise.resolve());
+// const preferenceFindOneMock = jest.fn(() => Promise.resolve());
 
 const userFindOneSpy = jest
     .spyOn(UserModel, 'findOne')
@@ -29,15 +30,15 @@ const userDestroySpy = jest
 //     .spyOn(UserModel, 'addPreferenceModel')
 //     .mockImplementation(userAddPreferenceDestroyMock as any);
 
-const preferenceFindOneSpy = jest
-    .spyOn(PreferenceModel, 'findOne')
-    .mockImplementation(preferenceFindOneMock as any);
-
-mockedUserModel.mockImplementation(() => {
-    return {
-        findOne: userFindOneMock,
-    } as any;
-});
+// const preferenceFindOneSpy = jest
+//     .spyOn(PreferenceModel, 'findOne')
+//     .mockImplementation(preferenceFindOneMock as any);
+//
+// mockedUserModel.mockImplementation(() => {
+//     return {
+//         findOne: userFindOneMock,
+//     } as any;
+// });
 
 describe('User service tests', function () {
 
@@ -72,7 +73,7 @@ describe('User service tests', function () {
         expect(userDestroySpy).toHaveBeenCalled();
     })
 
-    // Reason: The method createPreference addPreferenceModel is added at runtime, so jest doesn't sees it
+    // Reason: The method createPreferenceModel and addPreferenceModel are added at runtime, so jest doesn't sees them
     // test("addPreferences", async () => {
     //     const result = UserService.addPreference(MOCK_USER, MOCK_PREFERENCE)
     //
