@@ -83,7 +83,7 @@ export class UserController {
                 user.password != db_user.password ||
                 user.preferences != db_user.preferences
             ){
-                await UserService.addUser({id, username, email, password, preferences});
+                await UserService.editUser({id, username, email, password, preferences});
             }
             res.end();
         } catch(err) {
