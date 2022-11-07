@@ -11,7 +11,10 @@
     "dotenv": "^16.0.3",
     "express": "^4.17.3",
     "helmet": "^6.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.25.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

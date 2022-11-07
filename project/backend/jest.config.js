@@ -2,6 +2,7 @@ module.exports = {
     roots: ['<rootDir>/src'],
     transform: {
         '^.+\\.tsx?$': 'ts-jest',
+        '^.+\\.js?$': 'ts-jest',
     },
     collectCoverage: true,
     coverageThreshold: {

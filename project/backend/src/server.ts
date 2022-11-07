@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import {Middleware} from "./middleware/middleware";
+import {initModels} from "./database/models";
 
 config();
 const env = process.env;
@@ -11,6 +12,14 @@ const env = process.env;
 const app = express();
 const port = env.PORT || 8080;
 const host = `http://localhost:${port}`
+
+initModels()
+    .then(() => {
+        console.log('Database connection successfully initialized');
+    })
+    .catch(err => {
+        console.log(err);
+    });
 
 /************************************************************************************
  *                              Basic Express Middlewares
