@@ -6,7 +6,7 @@ export class BookEncryption{
     }
 
     static decryptBook(ciphertext: string): Promise<void>{
-        return Promise.reject();
+        return Promise.resolve();
     }
 
     static getEncryptionKey(): number {

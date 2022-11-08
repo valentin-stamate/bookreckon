@@ -25,6 +25,10 @@ const MOCK_REQUEST_ID_NULL: any = {
 
 describe('User controller tests', function () {
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     test('should throw an error when body id is null', async () => {
         await UserController.getUser(MOCK_REQUEST_ID_NULL, MOCK_RESPONSE, MOCK_NEXT);
 
