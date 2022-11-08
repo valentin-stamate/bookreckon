@@ -1,4 +1,5 @@
 import {User, Book, Author, Preference} from "../interface/interfaces";
+import { Request, Response, NextFunction } from 'express';
 
 export const enum ResponseMessage {
 
@@ -95,3 +96,4 @@ export const enum StatusCode {
     NETWORK_AUTHENTICATION_REQUIRED = 511,
     NETWORK_CONNECT_TIMEOUT_ERROR = 599,
 }
+

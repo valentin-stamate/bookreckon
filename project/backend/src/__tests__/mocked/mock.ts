@@ -1,4 +1,5 @@
 import {Author, Book, Preference, User} from "../../interface/interfaces";
+import {NextFunction, Request} from "express";
 
 export const MOCK_AUTHOR: Author = {
     firstName: "George",
@@ -18,6 +19,7 @@ export const MOCK_BOOK: Book = {
 }
 
 export const MOCK_USER: User = {
+    id: 1,
     username: "Cezar",
     email: "cezarcez@outlook.com",
     password: "parola",
@@ -27,3 +29,20 @@ export const MOCK_USER: User = {
 export const MOCK_PREFERENCE: Preference = {
     name: 'romance',
 }
+
+export const MOCK_REQUEST_USER = {
+    body: {
+        id: 1,
+        username: "Cezar",
+        email: "cezarcez@outlook.com",
+        password: "parola",
+        preferences: ["action", "automotive"]
+    },
+} as Request;
+
+export const MOCK_RESPONSE: any = {
+    json: jest.fn(),
+    status: jest.fn(),
+};
+
+export const MOCK_NEXT: NextFunction = jest.fn();
