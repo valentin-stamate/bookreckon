@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import {Middleware} from "./middleware/middleware";
 import {initModels} from "./database/models";
+import {DemoController} from "./controller/demo.controller";
 
 config();
 const env = process.env;
@@ -42,9 +43,7 @@ if (process.env.NODE_ENV === 'production') {
  *                               Register all REST routes
  ***********************************************************************************/
 
-app.get('/', (req, res) => {
-    res.end('Hello word!')
-});
+app.get('/', DemoController.demoControllerMethod);
 
 /************************************************************************************
  *                               Express Error Handling

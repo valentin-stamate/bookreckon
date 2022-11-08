@@ -1,6 +1,6 @@
 import {BookService} from "../service/book.service";
-import {MOCK_BOOK, MOCK_AUTHOR} from "../const/const";
-import {AuthorModel, BookModel, UserModel} from "../database/models";
+import {AuthorModel, BookModel} from "../database/models";
+import {MOCK_BOOK} from "./mocked/mock";
 
 jest.mock('../database/models');
 

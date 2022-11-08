@@ -1,5 +1,5 @@
 import {BookEncryption} from "../service/book.encryption.service";
-import {MOCK_BOOK} from "../const/const";
+import {MOCK_BOOK} from "./mocked/mock";
 
 describe('Book encryption service tests', function () {
 

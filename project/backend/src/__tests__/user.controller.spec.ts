@@ -1,5 +1,5 @@
 import {UserController} from "../controller/user.controller";
-import {MOCK_USER} from "../const/const";
+import {MOCK_USER} from "./mocked/mock";
 
 const mockedEnd = jest.fn(() => Promise.resolve());
 const mockedResponse = {

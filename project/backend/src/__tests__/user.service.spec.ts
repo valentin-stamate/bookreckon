@@ -1,7 +1,6 @@
 import {UserService} from "../service/user.service";
-import {MOCK_PREFERENCE, MOCK_USER} from "../const/const";
 import {PreferenceModel, UserModel} from "../database/models";
-import {Preference} from "../interface/interfaces";
+import {MOCK_USER} from "./mocked/mock";
 
 jest.mock('../database/models');
 

@@ -1,5 +1,5 @@
 import {AuthorService} from "../service/author.service";
-import {MOCK_AUTHOR} from "../const/const";
+import {MOCK_AUTHOR} from "./mocked/mock";
 
 
 describe('Author service tests', function () {
