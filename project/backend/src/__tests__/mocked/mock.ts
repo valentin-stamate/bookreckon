@@ -43,6 +43,7 @@ export const MOCK_REQUEST_USER = {
 export const MOCK_RESPONSE: any = {
     json: jest.fn(),
     status: jest.fn(),
+    end: jest.fn(),
 };
 
-export const MOCK_NEXT: NextFunction = jest.fn();
+export const MOCK_NEXT: any = jest.fn();

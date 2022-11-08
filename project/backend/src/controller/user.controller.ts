@@ -20,7 +20,7 @@ export class UserController {
         }
 
         try{
-            const id = Number(body.id) as number;
+            const id = parseInt(body.id);
 
             const result = await UserService.getUser(id);
             res.end(JSON.stringify(result));
