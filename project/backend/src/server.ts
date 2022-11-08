@@ -6,6 +6,8 @@ import cors from 'cors';
 import {Middleware} from "./middleware/middleware";
 import {initModels} from "./database/models";
 import {DemoController} from "./controller/demo.controller";
+import { UserController } from "./controller/user.controller";
+import { BookController } from "./controller/book.controller";
 
 config();
 const env = process.env;
@@ -44,6 +46,15 @@ if (process.env.NODE_ENV === 'production') {
  ***********************************************************************************/
 
 app.get('/', DemoController.demoControllerMethod);
+app.get('/user/:userId', UserController.getUser);
+app.post('/user', UserController.addUser);
+app.patch('/user/:userId', UserController.editUser)
+app.delete('/user/:userId', UserController.deleteUser)
+
+app.get('/book/:bookId', BookController.getBook);
+app.post('/book', BookController.addBook);
+app.patch('/book/:bookId', BookController.editBook)
+app.delete('/book/:bookId', BookController.deleteBook)
 
 /************************************************************************************
  *                               Express Error Handling

@@ -20,10 +20,10 @@ export class UserController {
         }
 
         try{
-            const id = Number(body.id) as number;
+            const id = parseInt(body.id);
 
-            await UserService.getUser(id);
-            res.end();
+            const result = await UserService.getUser(id);
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -47,8 +47,8 @@ export class UserController {
             const password = body.password as string;
             const preferences = body.preferences as string[];
 
-            await UserService.addUser({id: id, username: username, email: email, password: password, preferences: preferences});
-            res.end();
+            const result = await UserService.addUser({id: id, username: username, email: email, password: password, preferences: preferences});
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -74,9 +74,9 @@ export class UserController {
 
             const user: User = {id: id, username: username, email: email, password: password, preferences: preferences};
 
-            await UserService.editUser(user);
+            const result = await UserService.editUser(user);
 
-            res.end();
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -96,8 +96,8 @@ export class UserController {
         try{
             const id = Number(body.id) as number;
 
-            await UserService.deleteUser(await UserService.getUser(id));
-            res.end();
+            const result = await UserService.deleteUser(await UserService.getUser(id));
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -121,8 +121,8 @@ export class UserController {
 
             const preference: Preference = {id : preferenceID, name: preferenceName};
 
-            await UserService.addPreference(await UserService.getUser(id), preference);
-            res.end();
+            const result = await UserService.addPreference(await UserService.getUser(id), preference);
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -144,8 +144,8 @@ export class UserController {
 
             const preference: Preference = {id : preferenceID, name: preferenceName};
 
-            await UserService.removePreference(await UserService.getUser(id), preference);
-            res.end();
+            const result = await UserService.removePreference(await UserService.getUser(id), preference);
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
