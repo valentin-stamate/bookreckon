@@ -8,3 +8,9 @@ node_modules
 build
 package-lock.json
 coverage
+
+### Python-specific ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
