@@ -16,7 +16,7 @@ export class BookController{
         }
 
         try{
-            const id = req.get("id") as unknown as number;
+            const id = Number(body.id) as number;
 
             await BookService.getBook(id);
             res.end();
@@ -36,17 +36,17 @@ export class BookController{
         }
 
         try{
-            const id = req.get("id") as unknown as number;
-            const name = req.get("name") as string;
-            const genre = req.get("genre") as string;
-            const authors = req.get("authors") as unknown as Author[];
-            const audio = req.get("audio") as unknown as Buffer;
-            const photo = req.get("photo") as string;
-            const details = req.get("details") as string;
-            const imdb = req.get("imdb") as string;
-            const youtube = req.get("youtube") as string;
+            const id = Number(body.id) as number;
+            const name = body.name as string;
+            const genre = body.genre as string;
+            const authors = body.authors as Author[];
+            const audio = body.audio as Buffer;
+            const photo = body.photo as string;
+            const details = body.details as string;
+            const imdb = body.imdb as string;
+            const youtube = body.youtube as string;
 
-            await BookService.addBook({id, name, genre, authors, audio, photo, details, imdb, youtube});
+            await BookService.addBook({id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube});
             res.end();
         } catch(err) {
             next(err)
@@ -65,29 +65,21 @@ export class BookController{
         }
 
         try{
-            const id = req.get("id") as unknown as number;
-            const name = req.get("name") as string;
-            const genre = req.get("genre") as string;
-            const authors = req.get("authors") as unknown as Author[];
-            const audio = req.get("audio") as unknown as Buffer;
-            const photo = req.get("photo") as string;
-            const details = req.get("details") as string;
-            const imdb = req.get("imdb") as string;
-            const youtube = req.get("youtube") as string;
+            const id = Number(body.id) as number;
+            const name = body.name as string;
+            const genre = body.genre as string;
+            const authors = body.authors as Author[];
+            const audio = body.audio as Buffer;
+            const photo = body.photo as string;
+            const details = body.details as string;
+            const imdb = body.imdb as string;
+            const youtube = body.youtube as string;
 
-            const book: Book = {id, name, genre, authors, audio, photo, details, imdb, youtube};
+            const book: Book = {id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube};
             const db_book: Book = await BookService.getBook(id);
-            if (book.name != db_book.name ||
-                book.genre != db_book.genre ||
-                book.authors != db_book.authors ||
-                book.audio != db_book.audio ||
-                book.photo != db_book.photo ||
-                book.details != db_book.details ||
-                book.imdb != db_book.imdb ||
-                book.youtube != db_book.youtube
-            ){
-                await BookService.editBook({id, name, genre, authors, audio, photo, details, imdb, youtube});
-            }
+
+            await BookService.editBook(book);
+
             res.end();
         } catch(err) {
             next(err)
@@ -106,7 +98,7 @@ export class BookController{
         }
 
         try {
-            const id = req.get("id") as unknown as number;
+                const id = Number(body.id) as number;
 
             await BookService.deleteBook(await BookService.getBook(id));
             res.end();
@@ -124,23 +116,23 @@ export class BookController{
         }
 
         try{
-            const idBook = req.get("id") as unknown as number;
-            const nameBook = req.get("name") as string;
-            const genre = req.get("genre") as string;
-            const authors = req.get("authors") as unknown as Author[];
-            const audio = req.get("audio") as unknown as Buffer;
-            const photo = req.get("photo") as string;
-            const details = req.get("details") as string;
-            const imdb = req.get("imdb") as string;
-            const youtube = req.get("youtube") as string;
+            const id = Number(body.id) as number;
+            const name = body.name as string;
+            const genre = body.genre as string;
+            const authors = body.authors as Author[];
+            const audio = body.audio as Buffer;
+            const photo = body.photo as string;
+            const details = body.details as string;
+            const imdb = body.imdb as string;
+            const youtube = body.youtube as string;
 
-            const book: Book = {id: idBook, name: nameBook, genre, authors, audio, photo, details, imdb, youtube};
+            const book: Book = {id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube};
 
 
-            const idAuthor = req.get("idAuthor") as unknown as number;
-            const lastName = req.get("lastName") as string;
-            const firstName = req.get("firstName") as string;
-            const birthDate = req.get("birthDate") as unknown as Date;
+            const idAuthor = Number(body.idAuthor) as number;
+            const lastName = body.lastName as string;
+            const firstName = body.firstName as string;
+            const birthDate = body.birthDate as Date;
 
             const author: Author = {id : idAuthor, firstName: firstName, lastName: lastName, birthDate: birthDate};
 
@@ -162,23 +154,23 @@ export class BookController{
         }
 
         try{
-            const idBook = req.get("id") as unknown as number;
-            const nameBook = req.get("name") as string;
-            const genre = req.get("genre") as string;
-            const authors = req.get("authors") as unknown as Author[];
-            const audio = req.get("audio") as unknown as Buffer;
-            const photo = req.get("photo") as string;
-            const details = req.get("details") as string;
-            const imdb = req.get("imdb") as string;
-            const youtube = req.get("youtube") as string;
+            const id = Number(body.id) as number;
+            const name = body.name as string;
+            const genre = body.genre as string;
+            const authors = body.authors as Author[];
+            const audio = body.audio as Buffer;
+            const photo = body.photo as string;
+            const details = body.details as string;
+            const imdb = body.imdb as string;
+            const youtube = body.youtube as string;
 
-            const book: Book = {id: idBook, name: nameBook, genre, authors, audio, photo, details, imdb, youtube};
+            const book: Book = {id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube};
 
 
-            const idAuthor = req.get("idAuthor") as unknown as number;
-            const lastName = req.get("lastName") as string;
-            const firstName = req.get("firstName") as string;
-            const birthDate = req.get("birthDate") as unknown as Date;
+            const idAuthor = Number(body.idAuthor) as number;
+            const lastName = body.lastName as string;
+            const firstName = body.firstName as string;
+            const birthDate = body.birthDate as Date;
 
             const author: Author = {id : idAuthor, firstName: firstName, lastName: lastName, birthDate: birthDate};
 

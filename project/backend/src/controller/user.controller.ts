@@ -24,7 +24,7 @@ export class UserController {
         }
 
         try{
-            const id = req.get("id") as unknown as number;
+            const id = Number(body.id) as number;
 
             await UserService.getUser(id);
             res.end();
@@ -45,13 +45,13 @@ export class UserController {
         }
 
         try{
-            const id = req.get("id") as unknown as number;
-            const username = req.get("username") as string;
-            const email = req.get("email") as string;
-            const password = req.get("password") as string;
-            const preferences = req.get("preferences") as unknown as string[];
+            const id = Number(body.id) as number;
+            const username = body.username as string;
+            const email = body.email as string;
+            const password = body.password as string;
+            const preferences = body.preferences as string[];
 
-            await UserService.addUser({id, username, email, password, preferences});
+            await UserService.addUser({id: id, username: username, email: email, password: password, preferences: preferences});
             res.end();
         } catch(err) {
             next(err)
@@ -70,21 +70,16 @@ export class UserController {
         }
 
         try{
-            const id = req.get("id") as unknown as number;
-            const username = req.get("username") as string;
-            const email = req.get("email") as string;
-            const password = req.get("password") as string;
-            const preferences = req.get("preferences") as unknown as string[];
+            const id = Number(body.id) as number;
+            const username = body.username as string;
+            const email = body.email as string;
+            const password = body.password as string;
+            const preferences = body.preferences as string[];
 
-            const user: User = {id, username, email, password, preferences};
-            const db_user: User = await UserService.getUser(id);
-            if (user.username != db_user.username ||
-                user.email != db_user.email ||
-                user.password != db_user.password ||
-                user.preferences != db_user.preferences
-            ){
-                await UserService.editUser({id, username, email, password, preferences});
-            }
+            const user: User = {id: id, username: username, email: email, password: password, preferences: preferences};
+
+            await UserService.editUser(user);
+
             res.end();
         } catch(err) {
             next(err)
@@ -103,7 +98,7 @@ export class UserController {
         }
 
         try{
-            const id = req.get("id") as unknown as number;
+            const id = Number(body.id) as number;
 
             await UserService.deleteUser(await UserService.getUser(id));
             res.end();
@@ -124,9 +119,9 @@ export class UserController {
         }
 
         try{
-            const id = req.get("id") as unknown as number;
-            const preferenceID = req.get("preferenceID") as unknown as number;
-            const preferenceName = req.get("preferenceName") as string;
+            const id = Number(body.id) as number;
+            const preferenceID = Number(body.preferenceID) as number;
+            const preferenceName = body.preferenceName as string;
 
             const preference: Preference = {id : preferenceID, name: preferenceName};
 
@@ -147,9 +142,9 @@ export class UserController {
         }
 
         try{
-            const id = req.get("id") as unknown as number;
-            const preferenceID = req.get("preferenceID") as unknown as number;
-            const preferenceName = req.get("preferenceName") as string;
+            const id = Number(body.id) as number;
+            const preferenceID = Number(body.preferenceID) as number;
+            const preferenceName = body.preferenceName as string;
 
             const preference: Preference = {id : preferenceID, name: preferenceName};
 
