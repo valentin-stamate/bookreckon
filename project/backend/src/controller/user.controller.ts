@@ -35,7 +35,7 @@ export class UserController {
     static async addUser(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
-        if (body.id == null || body.username != null || body.password != null){
+        if (body.id == null || body.username == null || body.password == null){
             next(new ResponseError("Invalid form : Add user",  StatusCode.BAD_REQUEST));
             return;
         }

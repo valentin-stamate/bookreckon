@@ -30,6 +30,47 @@ export const MOCK_PREFERENCE: Preference = {
     name: 'romance',
 }
 
+export const MOCK_REQUEST_ID_NULL: any = {
+    body: {
+        id: undefined,
+        username: "Cezar",
+        email: "cezarcez@outlook.com",
+        password: "parola",
+        preferences: ["action", "automotive"]
+    },
+};
+
+export const MOCK_REQUEST_PREFERENCES_NULL: any = {
+    body: {
+        id: 1,
+        username: "Cezar",
+        email: "cezarcez@outlook.com",
+        password: "parola",
+        preferences: undefined,
+    },
+};
+
+export const MOCK_REQUEST_USERNAME_NULL: any = {
+    body: {
+        id: 1,
+        username: undefined,
+        email: "cezarcez@outlook.com",
+        password: "parola",
+        preferences: ["action"],
+    },
+};
+
+export const MOCK_REQUEST_PASSWORD_NULL: any = {
+    body: {
+        id: 1,
+        username: "Cezar",
+        email: "cezarcez@outlook.com",
+        password: undefined,
+        preferences: ["action"],
+    },
+};
+
+
 export const MOCK_REQUEST_USER = {
     body: {
         id: 1,
@@ -45,5 +86,37 @@ export const MOCK_RESPONSE: any = {
     status: jest.fn(),
     end: jest.fn(),
 };
+
+export const MOCK_REQUEST_PREFERENCES = {
+    body: {
+        id: 1,
+        preferenceID: 10,
+        preferenceName: "adventure",
+    },
+} as Request;
+
+export const MOCK_REQUEST_ID_NULL_PREFERENCES = {
+    body: {
+        id: undefined,
+        preferenceID: 10,
+        preferenceName: "adventure",
+    },
+} as Request;
+
+export const MOCK_REQUEST_PREFERENCE_ID_NULL_PREFERENCES = {
+    body: {
+        id: 1,
+        preferenceID: undefined,
+        preferenceName: "adventure",
+    },
+} as Request;
+
+export const MOCK_REQUEST_PREFERENCE_NAME_NULL_PREFERENCES = {
+    body: {
+        id: 1,
+        preferenceID: 10,
+        preferenceName: undefined,
+    },
+} as Request;
 
 export const MOCK_NEXT: any = jest.fn();
