@@ -1,18 +1,33 @@
 import {Author} from "../interface/interfaces";
+import {AuthorModel} from "../database/models";
 
 export class AuthorService {
-    static getAuthor():Promise<Author>{
-        return Promise.reject();
+    static async getAuthor(id: number):Promise<Author>{
+        return (await AuthorModel.findOne({
+            where: {
+                id: id,
+            }
+        }))?.toJSON() as Author;
     }
-    static addAuthor(author: Author): Promise<void> {
-        return Promise.reject();
+    static async addAuthor(author: Author): Promise<void> {
+        delete author.id;
+
+        await AuthorModel.create({
+            ...author
+        })
     }
 
-    static editAuthor(author: Author): Promise<void> {
-        return Promise.reject();
+    static async editAuthor(author: Author): Promise<void> {
+        await AuthorModel.create({
+            ...author
+        })
     }
 
-    static deleteAuthor(author: Author): Promise<void> {
-        return Promise.reject();
+    static async deleteAuthor(author: Author): Promise<void> {
+        await AuthorModel.destroy({
+            where: {
+                id: author.id
+            }
+        })
     }
 }

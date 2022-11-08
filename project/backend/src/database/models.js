@@ -1,3 +1,5 @@
+// noinspection JSVoidFunctionReturnValueUsed
+
 const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize('ip', 'postgres', 'postgres', {
@@ -30,7 +32,9 @@ export const PreferenceModel = sequelize.define('preferences', {
 })
 
 export const AuthorModel = sequelize.define('authors', {
-    name: DataTypes.TEXT,
+    firstName: DataTypes.TEXT,
+    lastName: DataTypes.TEXT,
+    birthDate: DataTypes.DATE
 })
 
 /* -----------================ ASSOCIATIONS ================----------- */
