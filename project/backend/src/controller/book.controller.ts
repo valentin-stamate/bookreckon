@@ -18,8 +18,8 @@ export class BookController{
         try{
             const id = Number(body.id) as number;
 
-            await BookService.getBook(id);
-            res.end();
+            const result = await BookService.getBook(id);
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -46,8 +46,8 @@ export class BookController{
             const imdb = body.imdb as string;
             const youtube = body.youtube as string;
 
-            await BookService.addBook({id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube});
-            res.end();
+            const result = await BookService.addBook({id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube});
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -78,9 +78,9 @@ export class BookController{
             const book: Book = {id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube};
             const db_book: Book = await BookService.getBook(id);
 
-            await BookService.editBook(book);
+            const result = await BookService.editBook(book);
 
-            res.end();
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -100,8 +100,8 @@ export class BookController{
         try {
                 const id = Number(body.id) as number;
 
-            await BookService.deleteBook(await BookService.getBook(id));
-            res.end();
+            const result = await BookService.deleteBook(await BookService.getBook(id));
+            res.end(JSON.stringify(result));
         } catch (err) {
             next(err)
         }
@@ -136,8 +136,8 @@ export class BookController{
 
             const author: Author = {id : idAuthor, firstName: firstName, lastName: lastName, birthDate: birthDate};
 
-            await BookService.addAuthor(book ,author);
-            res.end();
+            const result = await BookService.addAuthor(book ,author);
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
@@ -174,8 +174,8 @@ export class BookController{
 
             const author: Author = {id : idAuthor, firstName: firstName, lastName: lastName, birthDate: birthDate};
 
-            await BookService.removeAuthor(book ,author);
-            res.end();
+            const result = await BookService.removeAuthor(book ,author);
+            res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
