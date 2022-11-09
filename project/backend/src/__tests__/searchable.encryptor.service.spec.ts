@@ -1,6 +1,6 @@
 import {SearchableEncryptorService} from "../service/searchable.encryptor.service";
 
-// describe('Searchable encryptor service tests', () => {
+describe('Searchable encryptor service tests', () => {
     // test('Check cache hit or miss', async () => {
     //     let supposedlyEncryptedKeywords: Array<string> = ["dreams", "flowers", "cyborg"];
     //
@@ -14,4 +14,8 @@ import {SearchableEncryptorService} from "../service/searchable.encryptor.servic
     //     const result = SearchableEncryptorService.searchByKeywords(supposedlyEncryptedKeywords);
     //     await expect(result).resolves.not.toThrow();
     // });
-// });
+
+    test('', () => {
+
+    });
+});
