@@ -1,7 +1,48 @@
 import {NextFunction, Request, Response,} from "express";
-import {ContentType, StatusCode} from "../const/const";
+import {ContentType, Headers, ResponseMessage, StatusCode} from "../const/const";
+import {JwtService} from "../service/jwt.service";
+import {User} from "../interface/interfaces";
+import {UserService} from "../service/user.service";
 
 export class Middleware {
+
+    /** Middleware for unauthorized users. In this case every request can pass. */
+    static async visitorMiddleware(req: Request<any>, res: Response, next: NextFunction) {
+        res.setHeader(Headers.CONTENT_TYPE, ContentType.JSON);
+        next();
+    }
+
+    /** Middleware for authorized users. In order for the request to pass the user should exist. */
+    static async userMiddleware(req: Request<any>, res: Response, next: NextFunction) {
+        res.setHeader(Headers.CONTENT_TYPE, ContentType.JSON);
+
+        try {
+            const token = req.get(Headers.AUTHORIZATION);
+
+            if (token == null) {
+                next(new ResponseError(ResponseMessage.NO_AUTH_TOKEN, StatusCode.UNAUTHORIZED));
+                return;
+            }
+
+            const user = JwtService.verifyToken(token) as User;
+
+            if (user == null) {
+                next(new ResponseError(ResponseMessage.INVALID_AUTHORIZATION_TOKEN, StatusCode.UNAUTHORIZED));
+                return;
+            }
+
+            const existingUser = await UserService.getUser(user.id as number);
+
+            if (existingUser == null) {
+                next(new ResponseError(ResponseMessage.USER_NOT_FOUND, StatusCode.NOT_FOUND));
+                return;
+            }
+
+            next();
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     /** The middleware that handles all the exceptions thrown by the app */
     static errorHandler(err: ResponseError, req: Request<any>, res: Response, next: NextFunction) {

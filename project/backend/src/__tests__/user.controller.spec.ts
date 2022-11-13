@@ -64,7 +64,7 @@ describe('User controller tests', function () {
     });
 
     test('should throw an error when body id is null', async () => {
-        await UserController.getUser(MOCK_REQUEST_ID_NULL, MOCK_RESPONSE, MOCK_NEXT);
+        await UserController.getUserInfo(MOCK_REQUEST_ID_NULL, MOCK_RESPONSE, MOCK_NEXT);
 
         expect(MOCK_NEXT).toHaveBeenCalled();
         expect(userServiceGetUserSpy).not.toHaveBeenCalled();
@@ -72,7 +72,7 @@ describe('User controller tests', function () {
     });
 
     test('should throw an error when body preferences is null', async () => {
-        await UserController.getUser(MOCK_REQUEST_PREFERENCES_NULL, MOCK_RESPONSE, MOCK_NEXT);
+        await UserController.getUserInfo(MOCK_REQUEST_PREFERENCES_NULL, MOCK_RESPONSE, MOCK_NEXT);
 
         expect(MOCK_NEXT).toHaveBeenCalled();
         expect(userServiceGetUserSpy).not.toHaveBeenCalled();
@@ -80,7 +80,7 @@ describe('User controller tests', function () {
     });
 
     test('should call res end when body is valid', async () => {
-        await UserController.getUser(MOCK_REQUEST_USER, MOCK_RESPONSE, MOCK_NEXT);
+        await UserController.getUserInfo(MOCK_REQUEST_USER, MOCK_RESPONSE, MOCK_NEXT);
 
         expect(MOCK_NEXT).not.toHaveBeenCalled();
         expect(userServiceGetUserSpy).toHaveBeenCalled();

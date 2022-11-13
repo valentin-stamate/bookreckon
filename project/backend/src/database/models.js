@@ -1,5 +1,3 @@
-// noinspection JSVoidFunctionReturnValueUsed
-
 const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize('ip', 'postgres', 'postgres', {
@@ -50,4 +48,13 @@ BookModel.belongsToMany(AuthorModel, { through: 'author_books' });
 export async function initModels() {
     await sequelize.authenticate();
     await sequelize.sync({force: true});
+
+    const userA = {
+        id: 1,
+        username: 'valstam',
+        email: 'stamatevalentin125@gmail.com',
+        password: '123456789qwe',
+    };
+
+    await UserModel.create(userA);
 }

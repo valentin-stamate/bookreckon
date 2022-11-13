@@ -1,36 +1,50 @@
 import {NextFunction, Request, Response} from "express";
 import {ResponseError} from "../middleware/middleware";
-import {ResponseMessage, StatusCode} from "../const/const";
+import {ContentType, Headers, ResponseMessage, StatusCode} from "../const/const";
 import {UserService} from "../service/user.service";
 import {Preference, User} from "../interface/interfaces";
+import {JwtService} from "../service/jwt.service";
+import {UserModel} from "../database/models";
 
 export class UserController {
 
-    static async verifyCredentials(req: Request<any>, res: Response, next: NextFunction) {
-        return true;
-    }
-
-    //getUser
-    static async getUser(req: Request<any>, res: Response, next: NextFunction){
-        const body = req.body;
-
-        if (body.id == null || body.preferences == null){
-            next(new ResponseError("Invalid form : Get user",  StatusCode.BAD_REQUEST));
-            return;
-        }
+    static async getUserInfo(req: Request<any>, res: Response, next: NextFunction) {
+        const token = req.get(Headers.AUTHORIZATION);
+        const user = JwtService.verifyToken(token as string) as User;
 
         try{
-            const id = parseInt(body.id);
-
-            const result = await UserService.getUser(id);
+            const result = await UserService.getUser(user.id as number);
             res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
         }
-
     }
 
-    //addUser
+    static async loginUser(req: Request<any>, res: Response, next: NextFunction) {
+        const body = req.body as User;
+
+        try {
+            const token = await UserService.loginUser(body);
+
+            res.setHeader(Headers.CONTENT_TYPE, ContentType.TEXT);
+            res.end(token);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    static async signupUser(req: Request<any>, res: Response, next: NextFunction) {
+        const body = req.body as User;
+
+        try {
+            const token = await UserService.signupUser(body);
+
+            res.setHeader(Headers.CONTENT_TYPE, ContentType.TEXT);
+            res.end(token);
+        } catch (err) {
+            next(err);
+        }
+    }
 
     static async addUser(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;

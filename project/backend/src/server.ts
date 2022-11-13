@@ -5,9 +5,9 @@ import helmet from 'helmet';
 import cors from 'cors';
 import {Middleware} from "./middleware/middleware";
 import {initModels} from "./database/models";
-import {DemoController} from "./controller/demo.controller";
 import { UserController } from "./controller/user.controller";
 import { BookController } from "./controller/book.controller";
+import {UserService} from "./service/user.service";
 
 config();
 const env = process.env;
@@ -45,8 +45,12 @@ if (process.env.NODE_ENV === 'production') {
  *                               Register all REST routes
  ***********************************************************************************/
 
-app.get('/', DemoController.demoControllerMethod);
-app.get('/user/:userId', UserController.getUser);
+// Tested endpoints
+app.get('/api/user/login', Middleware.visitorMiddleware, UserController.loginUser);
+app.get('/api/user/signup', Middleware.visitorMiddleware, UserController.signupUser);
+
+// Untested endpoints
+app.get(`/api/user/info`, Middleware.userMiddleware, UserController.getUserInfo);
 app.post('/user', UserController.addUser);
 app.patch('/user/:userId', UserController.editUser)
 app.delete('/user/:userId', UserController.deleteUser)

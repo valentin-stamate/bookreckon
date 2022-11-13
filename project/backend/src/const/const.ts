@@ -1,12 +1,9 @@
-import {User, Book, Author, Preference} from "../interface/interfaces";
-import { Request, Response, NextFunction } from 'express';
-
 export const enum ResponseMessage {
-
-}
-
-export const enum RequestHeaders {
-    CONTENT_TYPE = 'Content-Type',
+    NO_AUTH_TOKEN = 'Unauthorized. No auth token',
+    INVALID_AUTHORIZATION_TOKEN = 'Invalid authorization token',
+    USER_NOT_FOUND = 'User not found',
+    INVALID_CREDENTIALS = 'Invalid credentials',
+    COMPLETE_ALL_FIELDS = 'Complete all fields',
 }
 
 export const enum ContentType {
@@ -19,6 +16,7 @@ export const enum ContentType {
 
 export const enum Headers {
     AUTHORIZATION = 'Authorization',
+    CONTENT_TYPE = 'Content-Type',
 }
 
 /** Contains the request responses */
