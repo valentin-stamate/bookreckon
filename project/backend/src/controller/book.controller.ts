@@ -39,14 +39,14 @@ export class BookController{
             const id = Number(body.id) as number;
             const name = body.name as string;
             const genre = body.genre as string;
-            const authors = body.authors as Author[];
-            const audio = body.audio as Buffer;
+            const authors = body.authors as string;
+            const audio = body.audio as string;
             const photo = body.photo as string;
             const details = body.details as string;
             const imdb = body.imdb as string;
             const youtube = body.youtube as string;
 
-            const result = await BookService.addBook({id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube});
+            const result = await BookService.addBook({id: id, title: name, genre: genre, authors: authors, audioBook: audio, photo: photo, description: details, imdb: imdb, youtube: youtube});
             res.end(JSON.stringify(result));
         } catch(err) {
             next(err)
@@ -68,14 +68,14 @@ export class BookController{
             const id = Number(body.id) as number;
             const name = body.name as string;
             const genre = body.genre as string;
-            const authors = body.authors as Author[];
-            const audio = body.audio as Buffer;
+            const authors = body.authors as string;
+            const audio = body.audio as string;
             const photo = body.photo as string;
             const details = body.details as string;
             const imdb = body.imdb as string;
             const youtube = body.youtube as string;
 
-            const book: Book = {id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube};
+            const book: Book = {id: id, title: name, genre: genre, authors: authors, audioBook: audio, photo: photo, description: details, imdb: imdb, youtube: youtube};
             const db_book: Book = await BookService.getBook(id);
 
             const result = await BookService.editBook(book);
@@ -119,14 +119,14 @@ export class BookController{
             const id = Number(body.id) as number;
             const name = body.name as string;
             const genre = body.genre as string;
-            const authors = body.authors as Author[];
-            const audio = body.audio as Buffer;
+            const authors = body.authors as string;
+            const audio = body.audio as string;
             const photo = body.photo as string;
             const details = body.details as string;
             const imdb = body.imdb as string;
             const youtube = body.youtube as string;
 
-            const book: Book = {id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube};
+            const book: Book = {id: id, title: name, genre: genre, authors: authors, audioBook: audio, photo: photo, description: details, imdb: imdb, youtube: youtube};
 
 
             const idAuthor = Number(body.idAuthor) as number;
@@ -157,14 +157,14 @@ export class BookController{
             const id = Number(body.id) as number;
             const name = body.name as string;
             const genre = body.genre as string;
-            const authors = body.authors as Author[];
-            const audio = body.audio as Buffer;
+            const authors = body.authors as string;
+            const audio = body.audio as string;
             const photo = body.photo as string;
             const details = body.details as string;
             const imdb = body.imdb as string;
             const youtube = body.youtube as string;
 
-            const book: Book = {id: id, name: name, genre: genre, authors: authors, audio: audio, photo: photo, details: details, imdb: imdb, youtube: youtube};
+            const book: Book = {id: id, title: name, genre: genre, authors: authors, audioBook: audio, photo: photo, description: details, imdb: imdb, youtube: youtube};
 
 
             const idAuthor = Number(body.idAuthor) as number;

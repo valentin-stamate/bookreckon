@@ -8,18 +8,22 @@ import {initModels} from "./database/models";
 import { UserController } from "./controller/user.controller";
 import { BookController } from "./controller/book.controller";
 import {UserService} from "./service/user.service";
+import {importBookDataset} from "./service/import.dataset.service";
 
 config();
 const env = process.env;
 
 const app = express();
-const port = env.PORT || 8080;
+const port = env.PORT || 8090;
 const host = `http://localhost:${port}`
 
 initModels()
     .then(() => {
         console.log('Database connection successfully initialized');
-    })
+    }).then(() => {
+        console.log("Dataset of books was inserted in DB.")
+        return importBookDataset();
+})
     .catch(err => {
         console.log(err);
     });

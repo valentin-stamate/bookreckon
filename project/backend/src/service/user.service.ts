@@ -81,7 +81,7 @@ export class UserService {
 
         const preferenceModel = await PreferenceModel.findOne({
             where: {
-                name: preference.name,
+                name: preference.title,
             }
         });
 
@@ -99,7 +99,7 @@ export class UserService {
 
         const preferenceModel = await PreferenceModel.findOne({
             where: {
-                name: preference.name,
+                name: preference.title,
             }
         });
 

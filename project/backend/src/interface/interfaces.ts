@@ -8,12 +8,12 @@ export interface User {
 
 export interface Book {
     id?: number;
-    name: string;
+    title: string;
     genre: string;
-    authors: Author[];
-    audio: Buffer;
+    authors: string;
+    audioBook: string;
     photo: string;
-    details: string;
+    description: string;
     imdb: string;
     youtube: string;
 }
@@ -27,5 +27,5 @@ export interface Author {
 
 export interface Preference {
     id?: number;
-    name: string;
+    title: string;
 }

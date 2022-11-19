@@ -15,12 +15,12 @@ export const UserModel = sequelize.define('users', {
 });
 
 export const BookModel = sequelize.define('books', {
-    name: DataTypes.TEXT,
+    title: DataTypes.TEXT,
     genre: DataTypes.TEXT,
-    // authors
-    audio: DataTypes.BLOB,
+    authors: DataTypes.TEXT,
+    audioBook: DataTypes.TEXT,
     photo: DataTypes.TEXT,
-    details: DataTypes.TEXT,
+    description: DataTypes.TEXT,
     imdb: DataTypes.TEXT,
     youtube: DataTypes.TEXT,
 });
@@ -42,8 +42,6 @@ UserModel.belongsToMany(BookModel, { through: 'book_users' });
 PreferenceModel.belongsToMany(UserModel, { through: 'user_preference' });
 UserModel.belongsToMany(PreferenceModel, { through: 'preference_users' });
 
-AuthorModel.belongsToMany(BookModel, { through: 'book_authors' });
-BookModel.belongsToMany(AuthorModel, { through: 'author_books' });
 
 export async function initModels() {
     await sequelize.authenticate();

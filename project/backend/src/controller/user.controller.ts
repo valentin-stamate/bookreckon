@@ -133,7 +133,7 @@ export class UserController {
             const preferenceID = Number(body.preferenceID) as number;
             const preferenceName = body.preferenceName as string;
 
-            const preference: Preference = {id : preferenceID, name: preferenceName};
+            const preference: Preference = {id : preferenceID, title: preferenceName};
 
             const result = await UserService.addPreference(await UserService.getUser(id), preference);
             res.end(JSON.stringify(result));
@@ -156,7 +156,7 @@ export class UserController {
             const preferenceID = Number(body.preferenceID) as number;
             const preferenceName = body.preferenceName as string;
 
-            const preference: Preference = {id : preferenceID, name: preferenceName};
+            const preference: Preference = {id : preferenceID, title: preferenceName};
 
             const result = await UserService.removePreference(await UserService.getUser(id), preference);
             res.end(JSON.stringify(result));
