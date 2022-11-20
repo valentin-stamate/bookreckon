@@ -12,6 +12,7 @@
     "express": "^4.17.3",
     "helmet": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
+    "kaop-ts": "^4.3.0",
     "morgan": "^1.10.0",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
