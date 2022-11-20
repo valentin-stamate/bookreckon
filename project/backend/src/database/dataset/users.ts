@@ -2,7 +2,7 @@ import {User} from "../../interface/interfaces";
 
 export const DATASET: User[] = [
     {
-        "id" : 1,
+        "id" : 4,
         "username": "Cezar Lupu",
         "email": "cezarlupu2022@taip.com",
         "password": "12345678",
@@ -24,4 +24,12 @@ export const DATASET: User[] = [
         "password": "parolamea",
         "preferences": ["Drama", "Horror"]
     },
+
+    {
+        "id": 1,
+        "username": 'valstam',
+        "email": 'stamatevalentin125@gmail.com',
+        "password": '123456789qwe',
+        "preferences": []
+    }
 ]
