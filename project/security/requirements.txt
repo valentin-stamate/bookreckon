@@ -1,2 +1,2 @@
-Flask
+Flask==2.2.2
 flask-restx==1.0.3
