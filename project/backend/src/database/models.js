@@ -48,7 +48,7 @@ export async function initModels() {
     await sequelize.sync({force: true});
 
     const userA = {
-        id: 1,
+        id: 0,
         username: 'valstam',
         email: 'stamatevalentin125@gmail.com',
         password: '123456789qwe',

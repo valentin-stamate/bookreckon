@@ -15,8 +15,18 @@ export class UserService {
         }))?.toJSON() as User;
     }
 
+    static async checkIfUserExistsById(id: number): Promise<boolean> {
+        const foundUser = await UserModel.findOne({
+            where: {
+                id: id,
+            }
+        });
+
+        return foundUser != null;
+    }
+
     static async loginUser(user: User) {
-        if (user.username == null || user.password == null) {
+        if (user.username == null || user.password == null || user.username == '' || user.password == '') {
             throw new ResponseError(ResponseMessage.INVALID_CREDENTIALS, StatusCode.BAD_REQUEST);
         }
 
@@ -34,8 +44,18 @@ export class UserService {
     }
 
     static async signupUser(user: User) {
-        if (user.username == null || user.email == null || user.password == null) {
+        if (user.username == null || user.email == null || user.password == null || user.username == '' || user.email == '' || user.password == '') {
             throw new ResponseError(ResponseMessage.COMPLETE_ALL_FIELDS, StatusCode.BAD_REQUEST);
+        }
+
+        const userModel = await UserModel.findOne({
+            where: {
+                username: user.username,
+            }
+        });
+
+        if (userModel != null) {
+            throw new ResponseError(ResponseMessage.DUPLICATE_USER, StatusCode.CONFLICT);
         }
 
         const newUser = {
@@ -58,9 +78,10 @@ export class UserService {
     }
 
     static async editUser(user: User): Promise<void> {
-        await UserModel.create({
-            ...user
-        });
+        await UserModel.update({
+                ...user
+            },
+            {where: {id: user.id}});
     }
 
     static async deleteUser(user: User): Promise<void> {

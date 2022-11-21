@@ -4,6 +4,7 @@ export const enum ResponseMessage {
     USER_NOT_FOUND = 'User not found',
     INVALID_CREDENTIALS = 'Invalid credentials',
     COMPLETE_ALL_FIELDS = 'Complete all fields',
+    DUPLICATE_USER = 'A user with the same username is already registered'
 }
 
 export const enum ContentType {
