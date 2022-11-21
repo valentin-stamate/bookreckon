@@ -1,8 +1,19 @@
-export class LogAspect 
+import { LOGGER } from "../logging/logger";
+
+export class LogAspect
 {
-    static log(meta: any) 
+    static logBefore(meta: any) 
     {
-        console.log('Called: ', meta.target);
-        console.log('Args: ', meta.args.length);
+        LOGGER.info(`Method ${meta.target.name}.${meta.method.name} is executing`);
+    }
+
+    static logAfter(meta: any) 
+    {
+        LOGGER.info(`Method ${meta.target.name}.${meta.method.name} executed.`);
+    }
+
+    static logException(meta : any)
+    {
+        LOGGER.severe(`Exception thrown: ${meta.exception}`)
     }
 }

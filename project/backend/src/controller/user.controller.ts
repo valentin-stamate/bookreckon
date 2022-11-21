@@ -6,11 +6,13 @@ import {Preference, User} from "../interface/interfaces";
 import {JwtService} from "../service/jwt.service";
 import {UserModel} from "../database/models";
 import { LogAspect } from "../aop/log";
-import { beforeMethod } from "kaop-ts";
+import { afterMethod, beforeMethod, onException } from "kaop-ts";
 
 export class UserController {
 
-    @beforeMethod(LogAspect.log)
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async getUserInfo(req: Request<any>, res: Response, next: NextFunction) {
         const token = req.get(Headers.AUTHORIZATION);
         const user = JwtService.verifyToken(token as string) as User;
@@ -23,7 +25,9 @@ export class UserController {
         }
     }
 
-    @beforeMethod(LogAspect.log)
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async loginUser(req: Request<any>, res: Response, next: NextFunction) {
         const body = req.body as User;
 
@@ -37,7 +41,9 @@ export class UserController {
         }
     }
 
-    @beforeMethod(LogAspect.log)
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async signupUser(req: Request<any>, res: Response, next: NextFunction) {
         const body = req.body as User;
 
@@ -51,7 +57,9 @@ export class UserController {
         }
     }
 
-    @beforeMethod(LogAspect.log)
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async addUser(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
@@ -76,7 +84,9 @@ export class UserController {
     }
 
     //editUser
-    @beforeMethod(LogAspect.log)
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async editUser(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
@@ -104,7 +114,9 @@ export class UserController {
     }
 
     //deleteUser
-    @beforeMethod(LogAspect.log)
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async deleteUser(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
@@ -125,7 +137,9 @@ export class UserController {
     }
 
     //addPreference
-    @beforeMethod(LogAspect.log)
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async addPreference(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
@@ -149,7 +163,9 @@ export class UserController {
 
     }
 
-    @beforeMethod(LogAspect.log)
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async removePreference(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
