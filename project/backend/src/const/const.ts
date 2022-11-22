@@ -2,6 +2,7 @@ export const enum ResponseMessage {
     NO_AUTH_TOKEN = 'Unauthorized. No auth token',
     INVALID_AUTHORIZATION_TOKEN = 'Invalid authorization token',
     USER_NOT_FOUND = 'User not found',
+    PREFERENCE_NOT_FOUND = 'Preference not found',
     INVALID_CREDENTIALS = 'Invalid credentials',
     COMPLETE_ALL_FIELDS = 'Complete all fields',
     DUPLICATE_USER = 'A user with the same username is already registered'

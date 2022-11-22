@@ -93,8 +93,7 @@ export class UserController {
     @onException(LogAspect.logException)
     static async editUser(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
-        const urlSplit = req.url.split('/');
-        const id = urlSplit[urlSplit.length-1]
+        const id = req.params.userId;
 
         if (id == null || id == ''){
             next(new ResponseError("Invalid form : Edit user",  StatusCode.BAD_REQUEST));
@@ -142,8 +141,9 @@ export class UserController {
     @afterMethod(LogAspect.logAfter)
     @onException(LogAspect.logException)
     static async deleteUser(req: Request<any>, res: Response, next: NextFunction){
-        const urlSplit = req.url.split('/');
-        const id = urlSplit[urlSplit.length-1]
+        // const urlSplit = req.url.split('/');
+        // const id = urlSplit[urlSplit.length-1]
+        const id = req.params.userId;
 
         if (id == null || id == ''){
             next(new ResponseError("Invalid form : Delete user",  StatusCode.BAD_REQUEST));
@@ -160,7 +160,6 @@ export class UserController {
         } catch(err) {
             next(err)
         }
-
     }
 
     //addPreference
@@ -169,25 +168,36 @@ export class UserController {
     @onException(LogAspect.logException)
     static async addPreference(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
+        const token = req.get(Headers.AUTHORIZATION);
+        const user = JwtService.verifyToken(token as string) as User;
 
-        if (body.id == null || body.preferenceID == null || body.preferenceName == null){
+        if (body.preferenceId == null || body.preferenceName == null || body.preferenceId == '' || body.preferenceName == ''){
             next(new ResponseError("Invalid form : Add preference to user",  StatusCode.BAD_REQUEST));
             return;
         }
 
+        const isUserInDB = await UserService.checkIfUserExistsById(Number(user.id));
+
+        const isPreferenceInDB = await UserService.checkIfPreferenceExistsById(Number(body.preferenceId))
+
         try{
-            const id = Number(body.id) as number;
+            if(!isUserInDB)
+                throw new ResponseError(ResponseMessage.USER_NOT_FOUND, StatusCode.NOT_FOUND);
+
+            if(!isPreferenceInDB)
+                throw new ResponseError(ResponseMessage.PREFERENCE_NOT_FOUND, StatusCode.NOT_FOUND);
+
             const preferenceID = Number(body.preferenceID) as number;
             const preferenceName = body.preferenceName as string;
 
             const preference: Preference = {id : preferenceID, title: preferenceName};
 
-            const result = await UserService.addPreference(await UserService.getUser(id), preference);
+            const result = await UserService.addPreference(user, preference)
             res.end(JSON.stringify(result));
-        } catch(err) {
+        }
+        catch(err) {
             next(err)
         }
-
     }
 
     @beforeMethod(LogAspect.logBefore)
@@ -195,25 +205,36 @@ export class UserController {
     @onException(LogAspect.logException)
     static async removePreference(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
+        const token = req.get(Headers.AUTHORIZATION);
+        const user = JwtService.verifyToken(token as string) as User;
 
-        if (body.id == null || body.preferenceID == null || body.preferenceName == null){
-            next(new ResponseError("Invalid form : Delete preference to user",  StatusCode.BAD_REQUEST));
+        if (body.preferenceId == null || body.preferenceName == null || body.preferenceId == '' || body.preferenceName == ''){
+            next(new ResponseError("Invalid form : Add preference to user",  StatusCode.BAD_REQUEST));
             return;
         }
 
+        const isUserInDB = await UserService.checkIfUserExistsById(Number(user.id));
+
+        const isPreferenceInDB = await UserService.checkIfPreferenceExistsById(Number(body.preferenceId))
+
         try{
-            const id = Number(body.id) as number;
+            if(!isUserInDB)
+                throw new ResponseError(ResponseMessage.USER_NOT_FOUND, StatusCode.NOT_FOUND);
+
+            if(!isPreferenceInDB)
+                throw new ResponseError(ResponseMessage.PREFERENCE_NOT_FOUND, StatusCode.NOT_FOUND);
+
             const preferenceID = Number(body.preferenceID) as number;
             const preferenceName = body.preferenceName as string;
 
             const preference: Preference = {id : preferenceID, title: preferenceName};
 
-            const result = await UserService.removePreference(await UserService.getUser(id), preference);
+            const result = await UserService.removePreference(user, preference)
             res.end(JSON.stringify(result));
-        } catch(err) {
+        }
+        catch(err) {
             next(err)
         }
-
     }
 
 

@@ -53,11 +53,13 @@ if (process.env.NODE_ENV === 'production') {
 app.get('/api/user/login', Middleware.visitorMiddleware, UserController.loginUser);
 app.get('/api/user/signup', Middleware.visitorMiddleware, UserController.signupUser);
 app.get(`/api/user/info`, Middleware.userMiddleware, UserController.getUserInfo);
+app.post('/api/user/addPreference', Middleware.userMiddleware, UserController.addPreference)
+app.delete('/api/user/removePreference', Middleware.userMiddleware, UserController.removePreference)
+
 app.post('/user', UserController.addUser);
 app.patch('/user/:userId', UserController.editUser)
 app.delete('/user/:userId', UserController.deleteUser)
 
-// Untested endpoints
 app.get('/book/:bookId', BookController.getBook);
 app.post('/book', BookController.addBook);
 app.patch('/book/:bookId', BookController.editBook)

@@ -25,6 +25,16 @@ export class UserService {
         return foundUser != null;
     }
 
+    static async checkIfPreferenceExistsById(id: Number): Promise<boolean>{
+        const foundPreference = await PreferenceModel.findOne({
+            where: {
+                id: id,
+            }
+        });
+
+        return foundPreference != null;
+    }
+
     static async loginUser(user: User) {
         if (user.username == null || user.password == null || user.username == '' || user.password == '') {
             throw new ResponseError(ResponseMessage.INVALID_CREDENTIALS, StatusCode.BAD_REQUEST);
@@ -107,7 +117,7 @@ export class UserService {
         });
 
         // @ts-ignore
-        userModel.addPreferenceModel(preferenceModel);
+        userModel.addPreferenceModel(preferenceModel); //TODO: fix
     }
 
     static async removePreference(user: User, preference: Preference): Promise<void> {
@@ -124,8 +134,9 @@ export class UserService {
             }
         });
 
+
         // @ts-ignore
-        userModel.destroyPreferenceModel(preferenceModel);
+        userModel.destroyPreferenceModel(preferenceModel); //TODO: fix
     }
 
 }
