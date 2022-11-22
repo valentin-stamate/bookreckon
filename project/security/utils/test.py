@@ -5,8 +5,9 @@ from Logger import Logger
 
 
 def main():
-    Logger.log_after('ceva')
+    l = Logger()
 
 
 if __name__ == "__main__":
     main()
+    print('Hi')
