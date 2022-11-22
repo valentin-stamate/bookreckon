@@ -1,9 +1,14 @@
 from rest_framework import serializers
 
-from recommendation_service_api.models import Person
+from recommendation_service_api.models import Books, Recommendations
 
 # serialize data displayed by the api, usually use __all__ for all fields
-class PersonSerializer(serializers.ModelSerializer):
+class BooksSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Person
+        model = Books
+        fields = '__all__'
+
+class RecommendationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recommendations
         fields = '__all__'
