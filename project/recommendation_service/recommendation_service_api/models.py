@@ -112,7 +112,7 @@ class Users(models.Model):
 # THE FOLLOWING PART IS NOT GENERATED USING python manage.py inspectdb > models.py
 
 class Recommendations(models.Model):
-    bookid = models.ForeignKey('Books', models.DO_NOTHING, db_column='bookId')
+    book = models.ForeignKey(Books, models.DO_NOTHING)
     rating = models.FloatField(blank=True, null=True)
 
     def get_queryset(self):

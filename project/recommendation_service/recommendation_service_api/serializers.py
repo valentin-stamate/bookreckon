@@ -9,6 +9,10 @@ class BooksSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RecommendationsSerializer(serializers.ModelSerializer):
+    book = serializers.SerializerMethodField()
+
+    def get_book(self, instance):
+        return BooksSerializer(instance=instance.book, context=self.context, many=False, required=False, read_only=False).data
     class Meta:
         model = Recommendations
         fields = '__all__'
