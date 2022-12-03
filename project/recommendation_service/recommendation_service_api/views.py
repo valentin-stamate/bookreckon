@@ -15,3 +15,10 @@ class BooksViewSet(viewsets.ModelViewSet):
 class RecommendationsViewSet(viewsets.ModelViewSet):
     queryset = Recommendations.objects.all()
     serializer_class = RecommendationsSerializer
+
+    def get_queryset(self):
+        search = self.request.query_params.get('search')
+        genres = self.request.query_params.get('genres')
+
+        queryset = Recommendations.get_recommendation(search, genres)
+        return queryset

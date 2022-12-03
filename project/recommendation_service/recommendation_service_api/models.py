@@ -115,13 +115,6 @@ class Recommendations(models.Model):
     book = models.ForeignKey(Books, models.DO_NOTHING)
     rating = models.FloatField(blank=True, null=True)
 
-    def get_queryset(self):
-        search = self.request.query_params.get('search')
-        genres = self.request.query_params.get('genres')
-
-        queryset = Recommendations.get_recommendation(search, genres)
-        return queryset
-
     @staticmethod
     def get_recommendation(search: str, genres: list):
         return Recommendations.objects.all()
