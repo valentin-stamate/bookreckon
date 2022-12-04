@@ -47,6 +47,23 @@ class Books(models.Model):
     def __str__(self) -> str:
         return str(self.title)
 
+    @staticmethod
+    def json_interest_fields():
+        books = Books.objects.all()
+        data = dict()
+        data["ID"] = dict()
+        data["Title"] = dict()
+        data["Genre"] = dict()
+        data["Authors"] = dict()
+        counter = 0
+        for book in books:
+            data["ID"][counter] = book.id
+            data["Title"][counter] = book.title
+            data["Genre"][counter] = book.genre
+            data["Authors"][counter] = book.authors
+            counter -=- 1
+        return data
+
     class Meta:
         managed = False
         db_table = 'books'
@@ -115,6 +132,27 @@ class Recommendations(models.Model):
     book = models.ForeignKey(Books, models.DO_NOTHING)
     rating = models.FloatField(blank=True, null=True)
 
-    @staticmethod
-    def get_recommendation(search: str, genres: list):
-        return Recommendations.objects.all()
+# Application doesn't work. What do I do?
+# 1. cd project\recommendation_service
+# 2. python manage.py migrate
+# 3. python manage.py runserver
+# Still doesn't work?
+# 4. Run the following query in pgAdmin
+# DO $$ DECLARE
+#     r RECORD;
+# BEGIN
+#     FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = current_schema()) LOOP
+#         EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+#     END LOOP;
+# END $$;
+# 5. python manage.py migrate
+# 6. cd ..
+# 7. cd backend
+# 8. npm start
+# 9. CTRL + C
+# 10. y
+# 11. ENTER
+# 12. cd recommendation_service
+# 13. python manage.py runserver
+# Still doesn't work?
+# 14. Accept your fate.
