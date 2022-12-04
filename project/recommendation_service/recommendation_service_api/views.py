@@ -9,6 +9,7 @@ from django.db import DatabaseError, transaction
 from recommendation_service_api.serializers import BooksSerializer, RecommendationsSerializer
 from recommendation_service_api.models import Books, Recommendations
 import scripts.db as rc
+import threading
 
 class BooksViewSet(viewsets.ModelViewSet):
     queryset = Books.objects.all()
@@ -24,7 +25,7 @@ class RecommendationsViewSet(viewsets.ModelViewSet):
         queryset = Recommendations.get_recommendation(genres)
         return queryset
 
-def refresh_recommendations():
+def refresh_recommendations_thread():
     results = rc.recommendation_calc()
     books = Books.objects.all()
     try:
@@ -37,3 +38,7 @@ def refresh_recommendations():
                 rec.save()
     except DatabaseError:
         print('[view] Could not finish updating recommendations.')
+
+def refresh_recommendations():
+    thread = threading.Thread(target=refresh_recommendations_thread)
+    thread.start()
