@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 
 from rest_framework import viewsets, filters
+from django.db import DatabaseError, transaction
 
 
 from recommendation_service_api.serializers import BooksSerializer, RecommendationsSerializer
@@ -18,12 +19,21 @@ class RecommendationsViewSet(viewsets.ModelViewSet):
     serializer_class = RecommendationsSerializer
 
     def get_queryset(self):
-        search = self.request.query_params.get('search')
         genres = self.request.query_params.get('genres')
 
-        queryset = self.get_recommendation(search, genres)
+        queryset = Recommendations.get_recommendation(genres)
         return queryset
 
-    def get_recommendation(self, search: str, genres: list):
-        rc.recommendation_calc()
-        return Recommendations.objects.all()
+def refresh_recommendations():
+    results = rc.recommendation_calc()
+    books = Books.objects.all()
+    try:
+        with transaction.atomic():
+            Recommendations.objects.all().delete()
+            for book in books:
+                rec = Recommendations()
+                rec.book = book
+                rec.recommendations = results[book.id]
+                rec.save()
+    except DatabaseError:
+        print('[view] Could not finish updating recommendations.')

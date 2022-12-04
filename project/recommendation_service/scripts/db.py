@@ -21,3 +21,4 @@ def recommendation_calc():
         row_id = row['ID']
         results[row_id] = similar_items
         results[row_id].pop(results[row_id].index((row_id)))
+    return results

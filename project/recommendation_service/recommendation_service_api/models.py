@@ -7,6 +7,13 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db import DatabaseError, transaction
+from django.core.exceptions import ObjectDoesNotExist
+
+from jsonfield import JSONField
+import random
 
 class Authors(models.Model):
     firstname = models.TextField(db_column='firstName', blank=True, null=True)  # Field name made lowercase.
@@ -67,7 +74,17 @@ class Books(models.Model):
     class Meta:
         managed = False
         db_table = 'books'
+        verbose_name = 'Book'
+        verbose_name_plural = 'Books'
 
+@receiver(post_save, sender=Books)
+def update_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_recommendations
+            refresh_recommendations()
+    except DatabaseError:
+        print('[models] Could not finish updating recommendations.')
 
 class PreferenceUsers(models.Model):
     createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
@@ -130,7 +147,32 @@ class Users(models.Model):
 
 class Recommendations(models.Model):
     book = models.ForeignKey(Books, models.DO_NOTHING)
-    rating = models.FloatField(blank=True, null=True)
+    recommendations = JSONField(null=True)
+
+    def __str__(self) -> str:
+        return str(self.book.title) + " Recommendation"
+    
+    @staticmethod
+    def get_recommendation(genres: list):
+        if genres is None:
+            return Recommendations.objects.all()
+        recommendation_list = set()
+        for genre in genres:
+            try: 
+                related_books = Books.objects.get(genre=genre)
+                for rb in related_books:
+                    current = Recommendations.objects.get(book=rb)
+                    recommendation_list.add(current.recommendations[:3])
+            except ObjectDoesNotExist:
+                pass
+        if len(recommendation_list) > 0:
+            random.shuffle(recommendation_list)
+            return recommendation_list
+        return Recommendations.objects.all()
+    
+    class Meta:
+        verbose_name = 'Recommendation'
+        verbose_name_plural = 'Recommendations'
 
 # Application doesn't work. What do I do?
 # 1. cd project\recommendation_service
