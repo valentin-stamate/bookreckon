@@ -9,6 +9,8 @@ import { GenreSelectionComponent } from './pages/genre-selection/genre-selection
 import {ReactiveFormsModule} from "@angular/forms";
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HomeComponent } from './pages/home/home.component';
+import { BookComponent } from './pages/book/book.component';
+import {YouTubePlayerModule} from "@angular/youtube-player";
 
 @NgModule({
   declarations: [
@@ -17,13 +19,15 @@ import { HomeComponent } from './pages/home/home.component';
     SignupComponent,
     GenreSelectionComponent,
     NavbarComponent,
-    HomeComponent
+    HomeComponent,
+    BookComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        ReactiveFormsModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    YouTubePlayerModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

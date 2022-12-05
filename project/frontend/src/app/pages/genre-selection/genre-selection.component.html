@@ -6,7 +6,7 @@
       <div *ngFor="let item of sentiments; index as i;" class="flex items-center mb-4">
         <input id="sentiment-{{item.name}}" type="checkbox" value="" [checked]="item.checked"
                (click)="onPressedCheckboxSentiments(item)"
-               class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 focus:ring-2">
+               class="w-4 h-4 text-blue-600 bg-gray-100 rounded-md border-gray-300 focus:ring-blue-500 focus:ring-2">
         <label for="sentiment-{{item.name}}"
                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{item.name}}</label>
       </div>
@@ -48,7 +48,7 @@
         <div *ngFor="let item of genres; index as i;" class="flex items-center mb-4">
           <input id="genre-{{item.name}}" type="checkbox" value="" [checked]="item.checked"
                  (click)="onPressedCheckboxGenres(item)"
-                 class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                 class="w-4 h-4 text-blue-600 bg-gray-100 rounded-md border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
           <label for="genre-{{item.name}}"
                  class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{item.name}}</label>
         </div>
