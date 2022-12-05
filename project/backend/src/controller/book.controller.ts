@@ -4,9 +4,14 @@ import {StatusCode} from "../const/const";
 import {UserService} from "../service/user.service";
 import {BookService} from "../service/book.service";
 import {Author, Book, Preference, User} from "../interface/interfaces";
+import { LogAspect } from "../aop/log";
+import { afterMethod, beforeMethod, onException } from "kaop-ts";
 
 export class BookController{
     //getBook
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async getBook(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
@@ -27,6 +32,9 @@ export class BookController{
     }
 
     //addBook
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async addBook(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
@@ -56,6 +64,9 @@ export class BookController{
 
 
     //editBook
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async editBook(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
@@ -89,6 +100,9 @@ export class BookController{
 
 
     //deleteBook
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async deleteBook(req: Request<any>, res: Response, next: NextFunction) {
         const body = req.body;
 
@@ -107,6 +121,9 @@ export class BookController{
         }
     }
     //addAuthor
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async addAuthor(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 
@@ -145,6 +162,9 @@ export class BookController{
     }
 
     //removeAuthor
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async removeAuthor(req: Request<any>, res: Response, next: NextFunction){
         const body = req.body;
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from flask import Flask
-from flask_restx import Api, Resource, fields
+from flask_restx import Api, Resource
 
-import constants
-
+from Advanced_Software_Engineering_Techniques.BookReckon.project.security.utils import \
+    constants
 
 app = Flask(constants.APP_NAME)
 api = Api(
