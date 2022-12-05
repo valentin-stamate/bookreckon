@@ -19,9 +19,38 @@ export class UserService {
         return result;
     }
 
+    static async checkIfUserExistsById(id: number): Promise<boolean> {
+        const foundUser = await UserModel.findOne({
+            where: {
+                id: id,
+            }
+        });
+        return foundUser != null;
+    }
+
+    static async checkIfUserExistsByUsername(username: string): Promise<boolean> {
+        const foundUser = await UserModel.findOne({
+            where: {
+                username: username,
+            }
+        });
+        return foundUser != null;
+    }
+
+    static async checkIfPreferenceExistsById(id: Number): Promise<boolean>{
+        const foundPreference = await PreferenceModel.findOne({
+            where: {
+                id: id,
+            }
+        });
+
+        return foundPreference != null;
+    }
+
     static async loginUser(user: User) {
         Mop.startCall("The monitor for loginUser method from UserService is called with: " + user);
-        if (user.username == null || user.password == null) {
+        if (user.username == null || user.password == null || user.username == '' || user.password == '') {
+
             throw new ResponseError(ResponseMessage.INVALID_CREDENTIALS, StatusCode.BAD_REQUEST);
         }
 
@@ -42,8 +71,18 @@ export class UserService {
 
     static async signupUser(user: User) {
         Mop.startCall("The monitor for signupUser method from UserService is called with: " + user);
-        if (user.username == null || user.email == null || user.password == null) {
+        if (user.username == null || user.email == null || user.password == null || user.username == '' || user.email == '' || user.password == '') {
             throw new ResponseError(ResponseMessage.COMPLETE_ALL_FIELDS, StatusCode.BAD_REQUEST);
+        }
+
+        const userModel = await UserModel.findOne({
+            where: {
+                username: user.username,
+            }
+        });
+
+        if (userModel != null) {
+            throw new ResponseError(ResponseMessage.DUPLICATE_USER, StatusCode.CONFLICT);
         }
 
         const newUser = {
@@ -72,10 +111,10 @@ export class UserService {
 
     static async editUser(user: User): Promise<void> {
         Mop.startCall("The monitor for editUser method from UserService is called with: " + user);
-        await UserModel.create({
-            ...user
-        });
-
+        await UserModel.update({
+                ...user
+            },
+            {where: {id: user.id}});
         Mop.endCall(true);
     }
 
@@ -108,7 +147,7 @@ export class UserService {
         Mop.endCall({userModel, preferenceModel});
 
         // @ts-ignore
-        userModel.addPreferenceModel(preferenceModel);
+        userModel.addPreferenceModel(preferenceModel); //TODO: fix
     }
 
     static async removePreference(user: User, preference: Preference): Promise<void> {
@@ -129,7 +168,7 @@ export class UserService {
         Mop.endCall({userModel, preferenceModel});
 
         // @ts-ignore
-        userModel.destroyPreferenceModel(preferenceModel);
+        userModel.destroyPreferenceModel(preferenceModel); //TODO: fix
     }
 
 }
