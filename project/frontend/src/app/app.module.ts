@@ -8,6 +8,7 @@ import { SignupComponent } from './pages/signup/signup.component';
 import { GenreSelectionComponent } from './pages/genre-selection/genre-selection.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     LoginComponent,
     SignupComponent,
     GenreSelectionComponent,
-    NavbarComponent
+    NavbarComponent,
+    HomeComponent
   ],
     imports: [
         BrowserModule,
