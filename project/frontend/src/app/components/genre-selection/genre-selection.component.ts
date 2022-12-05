@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
 import {Genre, Sentiment} from "../../service/interfaces";
 
 const defaultSentiments:Sentiment[] = [
@@ -60,22 +59,20 @@ export class GenreSelectionComponent implements OnInit {
   }
 
   deleteCustomSentiment(inputItem: string): any {
-    const alteredCustomSentiments = this.customSentiments.filter(item => item !== inputItem);
-    this.customSentiments = alteredCustomSentiments;
+    this.customSentiments = this.customSentiments.filter(item => item !== inputItem);
   }
 
   deleteCustomGenre(inputItem: string): any {
-    const alteredCustomGenre = this.customGenres.filter(item => item !== inputItem);
-    this.customGenres = alteredCustomGenre;
+    this.customGenres = this.customGenres.filter(item => item !== inputItem);
   }
 
-  onConfigureRequestSend(): any {
-    const mergedListOfSentiments = this.customSentiments.concat(this.sentiments.filter(item => item.checked).map(item => item.name));
-    const mergedListOfGenres = this.customGenres.concat(this.genres.filter(item => item.checked).map(item => item.name));
-    const body = {
-      sentiments: mergedListOfSentiments,
-      genres: mergedListOfGenres,
-    };
-    console.log(body);
-  }
+  // onConfigureRequestSend(): any {
+  //   const mergedListOfSentiments = this.customSentiments.concat(this.sentiments.filter(item => item.checked).map(item => item.name));
+  //   const mergedListOfGenres = this.customGenres.concat(this.genres.filter(item => item.checked).map(item => item.name));
+  //   const body = {
+  //     sentiments: mergedListOfSentiments,
+  //     genres: mergedListOfGenres,
+  //   };
+  //   console.log(body);
+  // }
 }
