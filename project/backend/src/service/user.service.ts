@@ -21,7 +21,15 @@ export class UserService {
                 id: id,
             }
         });
+        return foundUser != null;
+    }
 
+    static async checkIfUserExistsByUsername(username: string): Promise<boolean> {
+        const foundUser = await UserModel.findOne({
+            where: {
+                username: username,
+            }
+        });
         return foundUser != null;
     }
 

@@ -67,7 +67,7 @@ export class UserController {
             return;
         }
 
-        const isUserInDB = await UserService.checkIfUserExistsById(Number(body.id));
+        const isUserInDB = (await UserService.checkIfUserExistsById(Number(body.id))) || ((await UserService.checkIfUserExistsByUsername(body.username)))
 
         try{
             if (isUserInDB) {
@@ -141,8 +141,6 @@ export class UserController {
     @afterMethod(LogAspect.logAfter)
     @onException(LogAspect.logException)
     static async deleteUser(req: Request<any>, res: Response, next: NextFunction){
-        // const urlSplit = req.url.split('/');
-        // const id = urlSplit[urlSplit.length-1]
         const id = req.params.userId;
 
         if (id == null || id == ''){
@@ -213,14 +211,9 @@ export class UserController {
             return;
         }
 
-        const isUserInDB = await UserService.checkIfUserExistsById(Number(user.id));
-
         const isPreferenceInDB = await UserService.checkIfPreferenceExistsById(Number(body.preferenceId))
 
         try{
-            if(!isUserInDB)
-                throw new ResponseError(ResponseMessage.USER_NOT_FOUND, StatusCode.NOT_FOUND);
-
             if(!isPreferenceInDB)
                 throw new ResponseError(ResponseMessage.PREFERENCE_NOT_FOUND, StatusCode.NOT_FOUND);
 
