@@ -32,7 +32,7 @@ class SSESchemeTest(unittest.TestCase):
         sep = SearchableEncryptionProtocol(se)
         sep.setup(categories)
 
-        # Check if the book has a desired category
+        # Check if there is a book that has the desired category
         to_query = b'drama'
 
         # If true, we found the book that belongs in the desired category,
@@ -54,7 +54,7 @@ class SSESchemeTest(unittest.TestCase):
         sep = SearchableEncryptionProtocol(se)
         sep.setup(categories)
 
-        # Check if the book has a desired category
+        # Check if there is a book that has the desired category
         to_query = b'comedy'
 
         # This should fail as *comedy* is not part of the `categories` set
