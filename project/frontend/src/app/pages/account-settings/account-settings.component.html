@@ -1,0 +1,71 @@
+<app-navbar></app-navbar>
+
+<div class="min-h-screen p-6 bg-gray-100 flex items-center justify-center">
+  <div class="container max-w-screen-lg mx-auto">
+    <div>
+      <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
+        <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+          <div class="text-gray-600">
+            <p class="font-medium text-lg">Profile settings</p>
+          </div>
+          <div class="lg:col-span-2">
+            <div class="grid gap-10 gap-y-7 text-sm">
+              <div class="md:col-span-4">
+                <label for="username">Username</label>
+                <input type="text" name="full_name" id="username" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" />
+              </div>
+
+              <div class="md:col-span-4">
+                <label for="email">Email Address</label>
+                <input type="text" name="email" id="email" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" placeholder="email@domain.com" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="password">Password</label>
+                <input type="text" name="address" id="password" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" placeholder="" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="password-confirm">Confirm password</label>
+                <input type="text" name="city" id="password-confirm" class="h-10 border mt-1 rounded px-4 w-full bg-gray-50" value="" placeholder="" />
+              </div>
+
+              <div class="md:col-span-4 text-right">
+                <div class="inline-flex items-end">
+                  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Update profile</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+          <div class="text-gray-600">
+            <p class="font-medium text-lg">Genre settings</p>
+          </div>
+
+          <div class="lg:col-span-2">
+            <div class="grid gap-10 gap-y-7 text-sm">
+
+              <div class="md:col-span-4">
+                <app-genre-selection></app-genre-selection>
+              </div>
+
+              <div class="md:col-span-4 text-right">
+                <div class="inline-flex items-end">
+                  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Update preferences</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

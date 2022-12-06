@@ -2,3 +2,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.max-width {
+  width: min(1280px, 100%);
+  box-sizing: border-box;
+}

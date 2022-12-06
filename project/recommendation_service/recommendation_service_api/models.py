@@ -7,6 +7,13 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db import DatabaseError, transaction
+from django.core.exceptions import ObjectDoesNotExist
+
+from jsonfield import JSONField
+import random
 
 class Authors(models.Model):
     firstname = models.TextField(db_column='firstName', blank=True, null=True)  # Field name made lowercase.
@@ -47,10 +54,37 @@ class Books(models.Model):
     def __str__(self) -> str:
         return str(self.title)
 
+    @staticmethod
+    def json_interest_fields():
+        books = Books.objects.all()
+        data = dict()
+        data["ID"] = dict()
+        data["Title"] = dict()
+        data["Genre"] = dict()
+        data["Authors"] = dict()
+        counter = 0
+        for book in books:
+            data["ID"][counter] = book.id
+            data["Title"][counter] = book.title
+            data["Genre"][counter] = book.genre
+            data["Authors"][counter] = book.authors
+            counter -=- 1
+        return data
+
     class Meta:
         managed = False
         db_table = 'books'
+        verbose_name = 'Book'
+        verbose_name_plural = 'Books'
 
+@receiver(post_save, sender=Books)
+def update_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_recommendations
+            refresh_recommendations()
+    except DatabaseError:
+        print('[models] Could not finish updating recommendations.')
 
 class PreferenceUsers(models.Model):
     createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
@@ -112,16 +146,55 @@ class Users(models.Model):
 # THE FOLLOWING PART IS NOT GENERATED USING python manage.py inspectdb > models.py
 
 class Recommendations(models.Model):
-    bookid = models.ForeignKey('Books', models.DO_NOTHING, db_column='bookId')
-    rating = models.FloatField(blank=True, null=True)
+    book = models.ForeignKey(Books, models.DO_NOTHING)
+    recommendations = JSONField(null=True)
 
-    def get_queryset(self):
-        search = self.request.query_params.get('search')
-        genres = self.request.query_params.get('genres')
-
-        queryset = Recommendations.get_recommendation(search, genres)
-        return queryset
-
+    def __str__(self) -> str:
+        return str(self.book.title) + " Recommendation"
+    
     @staticmethod
-    def get_recommendation(search: str, genres: list):
+    def get_recommendation(genres: list):
+        if genres is None:
+            return Recommendations.objects.all()
+        recommendation_list = set()
+        for genre in genres:
+            try: 
+                related_books = Books.objects.get(genre=genre)
+                for rb in related_books:
+                    current = Recommendations.objects.get(book=rb)
+                    recommendation_list.add(current.recommendations[:3])
+            except ObjectDoesNotExist:
+                pass
+        if len(recommendation_list) > 0:
+            random.shuffle(recommendation_list)
+            return recommendation_list
         return Recommendations.objects.all()
+    
+    class Meta:
+        verbose_name = 'Recommendation'
+        verbose_name_plural = 'Recommendations'
+
+# Application doesn't work. What do I do?
+# 1. cd project\recommendation_service
+# 2. python manage.py migrate
+# 3. python manage.py runserver
+# Still doesn't work?
+# 4. Run the following query in pgAdmin
+# DO $$ DECLARE
+#     r RECORD;
+# BEGIN
+#     FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = current_schema()) LOOP
+#         EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+#     END LOOP;
+# END $$;
+# 5. python manage.py migrate
+# 6. cd ..
+# 7. cd backend
+# 8. npm start
+# 9. CTRL + C
+# 10. y
+# 11. ENTER
+# 12. cd recommendation_service
+# 13. python manage.py runserver
+# Still doesn't work?
+# 14. Accept your fate.

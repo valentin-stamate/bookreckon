@@ -12,3 +12,7 @@ class RecommendationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recommendations
         fields = '__all__'
+
+    def to_representation(self, instance):
+        self.fields['book'] = BooksSerializer(instance=instance.book, context=self.context, many=False, required=False, read_only=False)
+        return super().to_representation(instance)
