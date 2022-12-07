@@ -1,9 +1,10 @@
 import sys
-sys.path.append('../utils')
+import unittest
 
+# Local imports
+sys.path.append('../utils')
 from RandomKeyGenerator import RandomKeyGenerator
 from AESCipher import AESCipher
-import unittest
 
 
 class RandomKeyGeneratorTest(unittest.TestCase):
