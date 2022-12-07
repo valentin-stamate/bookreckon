@@ -30,8 +30,8 @@ class Authors(models.Model):
 class BookUsers(models.Model):
     createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
     updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-    userid = models.OneToOneField('Users', models.DO_NOTHING, db_column='userId', primary_key=True)  # Field name made lowercase.
-    bookid = models.ForeignKey('Books', models.DO_NOTHING, db_column='bookId')  # Field name made lowercase.
+    userid = models.OneToOneField('Users', models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
+    bookid = models.ForeignKey('Books', models.CASCADE, db_column='bookId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -89,8 +89,8 @@ def update_recommendations(sender, instance, **kwargs):
 class PreferenceUsers(models.Model):
     createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
     updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-    userid = models.OneToOneField('Users', models.DO_NOTHING, db_column='userId', primary_key=True)  # Field name made lowercase.
-    preferenceid = models.ForeignKey('Preferences', models.DO_NOTHING, db_column='preferenceId')  # Field name made lowercase.
+    userid = models.OneToOneField('Users', models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
+    preferenceid = models.ForeignKey('Preferences', models.CASCADE, db_column='preferenceId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -111,8 +111,8 @@ class Preferences(models.Model):
 class UserBooks(models.Model):
     createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
     updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-    bookid = models.OneToOneField(Books, models.DO_NOTHING, db_column='bookId', primary_key=True)  # Field name made lowercase.
-    userid = models.ForeignKey('Users', models.DO_NOTHING, db_column='userId')  # Field name made lowercase.
+    bookid = models.OneToOneField(Books, models.CASCADE, db_column='bookId', primary_key=True)  # Field name made lowercase.
+    userid = models.ForeignKey('Users', models.CASCADE, db_column='userId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -123,8 +123,8 @@ class UserBooks(models.Model):
 class UserPreference(models.Model):
     createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
     updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-    preferenceid = models.OneToOneField(Preferences, models.DO_NOTHING, db_column='preferenceId', primary_key=True)  # Field name made lowercase.
-    userid = models.ForeignKey('Users', models.DO_NOTHING, db_column='userId')  # Field name made lowercase.
+    preferenceid = models.OneToOneField(Preferences, models.CASCADE, db_column='preferenceId', primary_key=True)  # Field name made lowercase.
+    userid = models.ForeignKey('Users', models.CASCADE, db_column='userId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -146,7 +146,7 @@ class Users(models.Model):
 # THE FOLLOWING PART IS NOT GENERATED USING python manage.py inspectdb > models.py
 
 class Recommendations(models.Model):
-    book = models.ForeignKey(Books, models.DO_NOTHING)
+    book = models.ForeignKey(Books, models.CASCADE)
     recommendations = JSONField(null=True)
 
     def __str__(self) -> str:
