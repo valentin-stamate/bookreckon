@@ -1,6 +1,9 @@
 <div class="grid grid-cols-2 grid-rows-1 gap-10 max-width">
   <div class="border p-8 rounded-md">
-    <div class="text-3xl mb-4">Sentiments</div>
+    <div class="text-gray-600">
+      <p class="font-medium text-lg">Sentimets</p>
+    </div>
+    <br>
     <div *ngFor="let item of sentiments; index as i;" class="flex items-center mb-4">
       <input id="sentiment-{{item.name}}" type="checkbox" value="" [checked]="item.checked"
              (click)="onPressedCheckboxSentiments(item)"
@@ -8,23 +11,24 @@
       <label for="sentiment-{{item.name}}"
              class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{item.name}}</label>
     </div>
+    <br>
     <label for="input-field-sentiment"
            class="block mb-2 text-sm font-medium text-gray-900">Add custom sentiments</label>
     <div class="mb-6 flex gap-4">
       <div class="basis-[85%]">
         <input id="input-field-sentiment"
-               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+               class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                placeholder="sentiment" required
                #sentimentInputField>
       </div>
-      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full basis-[15%]"
+      <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded basis-[15%]"
               (click)="addCustomSentiment(sentimentInputField)">
         Add
       </button>
     </div>
     <div class="flex gap-4">
       <span *ngFor="let item of customSentiments;"
-            class="px-4 py-2 rounded-full text-gray-500 bg-gray-200 font-semibold text-sm flex align-center w-max cursor-pointer active:bg-gray-300 transition duration-300 ease">
+            class="px-4 py-2 rounded text-gray-500 bg-gray-200 font-semibold text-sm flex align-center w-max cursor-pointer active:bg-gray-300 transition duration-300 ease">
         {{item}}
         <button class="bg-transparent hover focus:outline-none" (click)="deleteCustomSentiment(item)">
           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times"
@@ -41,7 +45,10 @@
 
   <div>
     <div class="border p-8 rounded-md">
-      <div class="text-3xl mb-4">Genres</div>
+      <div class="text-gray-600">
+        <p class="font-medium text-lg">Genres</p>
+      </div>
+      <br>
       <div *ngFor="let item of genres; index as i;" class="flex items-center mb-4">
         <input id="genre-{{item.name}}" type="checkbox" value="" [checked]="item.checked"
                (click)="onPressedCheckboxGenres(item)"
@@ -49,23 +56,24 @@
         <label for="genre-{{item.name}}"
                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{item.name}}</label>
       </div>
+      <br>
       <label for="input-field-genre"
              class="block mb-2 text-sm font-medium text-gray-900">Add custom genres</label>
       <div class="mb-6 flex gap-4">
         <div class="basis-[85%]">
           <input id="input-field-genre"
-                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                 class="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                  placeholder="genre" required
                  #genreInputField>
         </div>
-        <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-full basis-[15%]"
+        <button class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded basis-[15%]"
                 (click)="addCustomGenre(genreInputField)">
           Add
         </button>
       </div>
       <div class="flex gap-4">
       <span *ngFor="let item of customGenres;"
-            class="px-4 py-2 rounded-full text-gray-500 bg-gray-200 font-semibold text-sm flex align-center w-max cursor-pointer active:bg-gray-300 transition duration-300 ease">
+            class="px-4 py-2 rounded text-gray-500 bg-gray-200 font-semibold text-sm flex align-center w-max cursor-pointer active:bg-gray-300 transition duration-300 ease">
         {{item}}
         <button class="bg-transparent hover focus:outline-none" (click)="deleteCustomGenre(item)">
           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times"
