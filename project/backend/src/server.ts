@@ -7,6 +7,7 @@ import {Middleware} from "./middleware/middleware";
 import { UserController } from "./controller/user.controller";
 import { BookController } from "./controller/book.controller";
 import {populateDatabase} from "./service/dataset.service";
+import {RecommendationController} from "./controller/recommendation.controller";
 
 config();
 const env = process.env;
@@ -48,10 +49,9 @@ if (process.env.NODE_ENV === 'production') {
 app.get('/api/user/login', Middleware.visitorMiddleware, UserController.loginUser);
 app.get('/api/user/signup', Middleware.visitorMiddleware, UserController.signupUser);
 app.put('/api/user/edit-preference', Middleware.userMiddleware, UserController.editUserPreference);
-
+app.get('/api/user/recommendations', Middleware.userMiddleware, RecommendationController.getRecommendations);
 app.get(`/api/user/info`, Middleware.userMiddleware, UserController.getUserInfo);
-
-app.get('/book/:bookId', BookController.getBook);
+app.get('/api/book/:bookId', Middleware.userMiddleware, BookController.getBook);
 
 /************************************************************************************
  *                               Express Error Handling

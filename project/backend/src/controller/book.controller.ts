@@ -10,17 +10,16 @@ export class BookController{
     @afterMethod(LogAspect.logAfter)
     @onException(LogAspect.logException)
     static async getBook(req: Request<any>, res: Response, next: NextFunction){
-        const body = req.body;
+        const params = req.params;
 
-        if (body.id == null || body.preferences == null){
+        if (params.bookId == null){
             next(new ResponseError("Invalid form : Get book",  StatusCode.BAD_REQUEST));
             return;
         }
 
         try{
-            const id = Number(body.id) as number;
+            const result = await BookService.getBook(parseInt(params.bookId));
 
-            const result = await BookService.getBook(id);
             res.end(JSON.stringify(result));
         } catch(err) {
             next(err)

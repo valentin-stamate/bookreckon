@@ -38,7 +38,14 @@ export class UserService {
                 sentiments: true,
                 genres: true,
             },
-        });
+        }) as User;
+
+        if (result == null) {
+            throw new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND);
+        }
+
+        result.password = '';
+
         Mop.endCall(result);
         return result;
     }
