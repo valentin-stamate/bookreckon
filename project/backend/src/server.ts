@@ -4,11 +4,9 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import {Middleware} from "./middleware/middleware";
-import {initModels} from "./database/models";
 import { UserController } from "./controller/user.controller";
 import { BookController } from "./controller/book.controller";
-import {UserService} from "./service/user.service";
-import {importBookDataset} from "./service/import.dataset.service";
+import {populateDatabase} from "./service/dataset.service";
 
 config();
 const env = process.env;
@@ -17,16 +15,14 @@ const app = express();
 const port = env.PORT || 8080;
 const host = `http://localhost:${port}`
 
-initModels()
+populateDatabase()
     .then(() => {
-        console.log('Database connection successfully initialized');
-    }).then(() => {
-        console.log("Dataset of books was inserted in DB.")
-        return importBookDataset();
-})
-    .catch(err => {
+        console.log("Database populated successfully");
+    })
+    .catch((err) => {
+        console.log("Error populating database");
         console.log(err);
-    });
+    })
 
 /************************************************************************************
  *                              Basic Express Middlewares
@@ -51,6 +47,7 @@ if (process.env.NODE_ENV === 'production') {
 
 app.get('/api/user/login', Middleware.visitorMiddleware, UserController.loginUser);
 app.get('/api/user/signup', Middleware.visitorMiddleware, UserController.signupUser);
+app.put('/api/user/edit-preference', Middleware.userMiddleware, UserController.editUserPreference);
 
 app.get(`/api/user/info`, Middleware.userMiddleware, UserController.getUserInfo);
 

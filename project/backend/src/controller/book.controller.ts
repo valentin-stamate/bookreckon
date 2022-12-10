@@ -1,9 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {ResponseError} from "../middleware/middleware";
 import {StatusCode} from "../const/const";
-import {UserService} from "../service/user.service";
 import {BookService} from "../service/book.service";
-import {Author, Book, Preference, User} from "../interface/interfaces";
 import { LogAspect } from "../aop/log";
 import { afterMethod, beforeMethod, onException } from "kaop-ts";
 

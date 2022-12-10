@@ -3,7 +3,8 @@ export interface User {
     username: string;
     email: string;
     password: string;
-    preferences: string[];
+    genres?: GenrePreference[];
+    sentiments?: SentimentPreference[];
 }
 
 export interface Book {
@@ -12,21 +13,21 @@ export interface Book {
     genre: string;
     authors: string;
     audioBook: string;
-    photo: string;
+    cover: string;
     description: string;
-    imdb: string;
-    youtube: string;
+    imdbLink: string;
+    youtubeLink: string;
 }
 
-export interface Author {
+export interface GenrePreference {
     id?: number;
-    firstName: string;
-    lastName: string;
-    birthDate: Date;
+    name: string;
+    userId?: number;
 }
 
-export interface Preference {
+export interface SentimentPreference {
     id?: number;
-    title: string;
+    name: string;
+    userId?: number;
 }
 

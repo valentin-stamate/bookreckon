@@ -1,8 +1,8 @@
-import {importBookDataset} from "../service/import.dataset.service";
+import {populateDatabase} from "../service/dataset.service";
 
 describe('Insert Books Test', function () {
     test('Insert books', async () => {
-        importBookDataset()
+        populateDatabase()
             .catch(err => {
                 console.log(err);
             });

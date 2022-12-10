@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {ResponseError} from "../middleware/middleware";
-import {ContentType, Headers, StatusCode} from "../const/const";
+import {ContentType, Headers, ResponseMessage, StatusCode} from "../const/const";
 import {UserService} from "../service/user.service";
-import {Preference, User} from "../interface/interfaces";
+import {User} from "../interface/interfaces";
 import {JwtService} from "../service/jwt.service";
 import { LogAspect } from "../aop/log";
 import { afterMethod, beforeMethod, onException } from "kaop-ts";
@@ -56,54 +56,22 @@ export class UserController {
         }
     }
 
-    @beforeMethod(LogAspect.logBefore)
-    @afterMethod(LogAspect.logAfter)
-    @onException(LogAspect.logException)
-    static async addPreference(req: Request<any>, res: Response, next: NextFunction){
+    static async editUserPreference(req: Request<any>, res: Response, next: NextFunction) {
         const body = req.body;
 
-        if (body.id == null || body.preferenceID == null || body.preferenceName == null){
-            next(new ResponseError("Invalid form : Add preference to user",  StatusCode.BAD_REQUEST));
-            return;
-        }
+        const genres = body.genres;
+        const sentiments = body.sentiments;
 
-        try{
-            const id = Number(body.id) as number;
-            const preferenceID = Number(body.preferenceID) as number;
-            const preferenceName = body.preferenceName as string;
+        try {
+            if (genres === null || sentiments === null) {
+                throw new ResponseError(ResponseMessage.COMPLETE_ALL_FIELDS, StatusCode.BAD_REQUEST);
+            }
 
-            const preference: Preference = {id : preferenceID, title: preferenceName};
+            await UserService.updatePreferences(genres, sentiments);
 
-            const result = await UserService.addPreference(await UserService.getUserInfo(id), preference);
-            res.end(JSON.stringify(result));
-        } catch(err) {
-            next(err)
-        }
-
-    }
-
-    @beforeMethod(LogAspect.logBefore)
-    @afterMethod(LogAspect.logAfter)
-    @onException(LogAspect.logException)
-    static async removePreference(req: Request<any>, res: Response, next: NextFunction){
-        const body = req.body;
-
-        if (body.id == null || body.preferenceID == null || body.preferenceName == null){
-            next(new ResponseError("Invalid form : Delete preference to user",  StatusCode.BAD_REQUEST));
-            return;
-        }
-
-        try{
-            const id = Number(body.id) as number;
-            const preferenceID = Number(body.preferenceID) as number;
-            const preferenceName = body.preferenceName as string;
-
-            const preference: Preference = {id : preferenceID, title: preferenceName};
-
-            const result = await UserService.removePreference(await UserService.getUserInfo(id), preference);
-            res.end(JSON.stringify(result));
-        } catch(err) {
-            next(err)
+            res.end();
+        } catch (err) {
+            next(err);
         }
 
     }
