@@ -18,7 +18,7 @@ import {UserService} from "../service/user.service";
 
 jest.mock('../service/user.service');
 const userServiceGetUserSpy = jest
-    .spyOn(UserService, 'getUser')
+    .spyOn(UserService, 'getUserInfo')
     .mockImplementation(jest.fn(() => Promise.resolve()) as any);
 
 

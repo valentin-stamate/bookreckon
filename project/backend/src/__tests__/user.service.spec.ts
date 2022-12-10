@@ -42,7 +42,7 @@ const userDestroySpy = jest
 describe('User service tests', function () {
 
     test('Get user', async () => {
-        const result = UserService.getUser(1);
+        const result = UserService.getUserInfo(1);
 
         await expect(result).resolves.not.toThrow();
         expect(userFindOneSpy).toHaveBeenCalled();

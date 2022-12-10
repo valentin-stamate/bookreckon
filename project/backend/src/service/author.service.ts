@@ -13,6 +13,7 @@ export class AuthorService {
         Mop.endCall(result);
         return result;
     }
+
     static async addAuthor(author: Author): Promise<void> {
         Mop.startCall("The monitor for addAuthor method from AuthorService is called with: " + author);
         delete author.id;

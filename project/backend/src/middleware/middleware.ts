@@ -31,7 +31,7 @@ export class Middleware {
                 return;
             }
 
-            const existingUser = await UserService.getUser(user.id as number);
+            const existingUser = await UserService.getUserInfo(user.id as number);
 
             if (existingUser == null) {
                 next(new ResponseError(ResponseMessage.USER_NOT_FOUND, StatusCode.NOT_FOUND));

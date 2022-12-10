@@ -7,7 +7,7 @@ import {Mop} from "../mop/mop";
 
 export class UserService {
 
-    static async getUser(id: number): Promise<User> {
+    static async getUserInfo(id: number): Promise<User> {
         Mop.startCall("The monitor for getUser method from UserService is called with: " + id);
         const result = (await UserModel.findOne({
             where: {
@@ -57,37 +57,6 @@ export class UserService {
         Mop.endCall(newUser);
 
         return JwtService.generateAccessTokenForStudent(newUser as User);
-    }
-
-    static async addUser(user: User): Promise<void> {
-        Mop.startCall("The monitor for addUser method from UserService is called with: " + user);
-        delete user.id;
-
-        await UserModel.create({
-            ...user
-        });
-
-        Mop.endCall(true);
-    }
-
-    static async editUser(user: User): Promise<void> {
-        Mop.startCall("The monitor for editUser method from UserService is called with: " + user);
-        await UserModel.create({
-            ...user
-        });
-
-        Mop.endCall(true);
-    }
-
-    static async deleteUser(user: User): Promise<void> {
-        Mop.startCall("The monitor for deleteUser method from UserService is called with: " + user);
-        await UserModel.destroy({
-            where: {
-                id: user.id,
-            }
-        });
-
-        Mop.endCall(true);
     }
 
     static async addPreference(user: User, preference: Preference): Promise<void> {
