@@ -15,14 +15,14 @@ const app = express();
 const port = env.PORT || 8080;
 const host = `http://localhost:${port}`
 
-populateDatabase()
-    .then(() => {
-        console.log("Database populated successfully");
-    })
-    .catch((err) => {
-        console.log("Error populating database");
-        console.log(err);
-    })
+// populateDatabase()
+//     .then(() => {
+//         console.log("Database populated successfully");
+//     })
+//     .catch((err) => {
+//         console.log("Error populating database");
+//         console.log(err);
+//     });
 
 /************************************************************************************
  *                              Basic Express Middlewares

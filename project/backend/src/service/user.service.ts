@@ -106,8 +106,46 @@ export class UserService {
         return JwtService.generateAccessTokenForStudent(newUser as User);
     }
 
-    static async updatePreferences(genres: string[], sentiments: string[]) {
+    static async updatePreferences(userId: number, genres: string[], sentiments: string[]) {
+        await this.prismaClient.genrePreference.deleteMany({
+            where: {
+                userId: userId,
+            }
+        });
 
+        await this.prismaClient.sentimentPreference.deleteMany({
+            where: {
+                userId: userId,
+            }
+        });
+
+        const user = await this.prismaClient.user.findFirst({
+            where: {
+                id: userId,
+            }
+        });
+
+        if (user == null) {
+            throw new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND);
+        }
+
+        await this.prismaClient.genrePreference.createMany({
+            data: genres.map(item => {
+                return {
+                    name: item,
+                    userId: user.id,
+                }
+            })
+        });
+
+        await this.prismaClient.sentimentPreference.createMany({
+            data: sentiments.map(item => {
+                return {
+                    name: item,
+                    userId: user.id,
+                }
+            })
+        });
     }
 
 }

@@ -56,8 +56,15 @@ export class UserController {
         }
     }
 
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
     static async editUserPreference(req: Request<any>, res: Response, next: NextFunction) {
         const body = req.body;
+
+        const token = req.get(Headers.AUTHORIZATION) as string;
+        const user = JwtService.verifyToken(token) as User;
+        const userId = user.id as number;
 
         const genres = body.genres;
         const sentiments = body.sentiments;
@@ -67,7 +74,7 @@ export class UserController {
                 throw new ResponseError(ResponseMessage.COMPLETE_ALL_FIELDS, StatusCode.BAD_REQUEST);
             }
 
-            await UserService.updatePreferences(genres, sentiments);
+            await UserService.updatePreferences(userId, genres, sentiments);
 
             res.end();
         } catch (err) {
