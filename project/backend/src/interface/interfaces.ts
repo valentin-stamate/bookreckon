@@ -16,7 +16,11 @@ export interface Book {
     cover: string;
     description: string;
     imdbLink: string;
+    goodreadsLink: string;
     youtubeLink: string;
+    rating: number;
+    ratings: number;
+    reviews: number;
 }
 
 export interface GenrePreference {

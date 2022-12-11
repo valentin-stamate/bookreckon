@@ -42,5 +42,9 @@ model Book {
     cover          String
     description    String
     imdbLink       String
+    goodreadsLink  String
     youtubeLink    String
+    rating         Float
+    ratings        Int
+    reviews        Int
 }
