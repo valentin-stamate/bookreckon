@@ -23,7 +23,7 @@ export class UserService {
         }
 
         await this.prismaClient.user.create({
-            data: user,
+            data: user as any,
         });
     }
 
