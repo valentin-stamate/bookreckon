@@ -46,8 +46,8 @@ if (process.env.NODE_ENV === 'production') {
  *                               Register all REST routes
  ***********************************************************************************/
 
-app.get('/api/user/login', Middleware.visitorMiddleware, UserController.loginUser);
-app.get('/api/user/signup', Middleware.visitorMiddleware, UserController.signupUser);
+app.post('/api/user/login', Middleware.visitorMiddleware, UserController.loginUser);
+app.post('/api/user/signup', Middleware.visitorMiddleware, UserController.signupUser);
 app.put('/api/user/edit-preference', Middleware.userMiddleware, UserController.editUserPreference);
 app.get('/api/user/recommendations', Middleware.userMiddleware, RecommendationController.getRecommendations);
 app.get(`/api/user/info`, Middleware.userMiddleware, UserController.getUserInfo);
