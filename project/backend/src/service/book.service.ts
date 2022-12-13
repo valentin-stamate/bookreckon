@@ -1,12 +1,13 @@
 import {Book} from "../interface/interfaces";
 import {Mop} from "../mop/mop";
-import {PrismaClient} from '@prisma/client'
 import {ResponseError} from "../middleware/middleware";
 import {ResponseMessage, StatusCode} from "../const/const";
 
+import prisma from '../context/context'
+
 export class BookService {
 
-    private static prismaClient = new PrismaClient();
+    private static prismaClient = prisma;
 
     static async getBook(id: number): Promise<Book>{
         Mop.startCall("The monitor for getBook method from BookService is called with: " + id);

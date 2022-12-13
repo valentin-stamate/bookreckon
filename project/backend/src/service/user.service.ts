@@ -3,11 +3,12 @@ import {ResponseError} from "../middleware/middleware";
 import {ResponseMessage, StatusCode} from "../const/const";
 import {JwtService} from "./jwt.service";
 import {Mop} from "../mop/mop";
-import {PrismaClient} from '@prisma/client'
+
+import prisma from '../context/context'
 
 export class UserService {
 
-    private static prismaClient = new PrismaClient();
+    private static prismaClient = prisma;
 
     static async createUser(user: User) {
         if (user.genres != null) {
