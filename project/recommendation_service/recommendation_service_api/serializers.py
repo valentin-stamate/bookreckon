@@ -1,18 +1,23 @@
 from rest_framework import serializers
 
-from recommendation_service_api.models import Books, Recommendations
+from recommendation_service_api.models import Book, Recommendation, UserRecommendation
 
 # serialize data displayed by the api, usually use __all__ for all fields
-class BooksSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Books
+        model = Book
         fields = '__all__'
 
-class RecommendationsSerializer(serializers.ModelSerializer):
+class RecommendationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Recommendations
+        model = Recommendation
         fields = '__all__'
 
     def to_representation(self, instance):
-        self.fields['book'] = BooksSerializer(instance=instance.book, context=self.context, many=False, required=False, read_only=False)
+        self.fields['book'] = BookSerializer(instance=instance.book, context=self.context, many=False, required=False, read_only=False)
         return super().to_representation(instance)
+
+class UserRecommendationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserRecommendation
+        fields = '__all__'

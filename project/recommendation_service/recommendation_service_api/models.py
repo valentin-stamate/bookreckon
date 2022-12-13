@@ -11,73 +11,61 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db import DatabaseError, transaction
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.cache import cache
+from django.db.models import Avg
 
 from jsonfield import JSONField
 import random
 
-class Authors(models.Model):
-    firstname = models.TextField(db_column='firstName', blank=True, null=True)  # Field name made lowercase.
-    lastname = models.TextField(db_column='lastName', blank=True, null=True)  # Field name made lowercase.
-    birthdate = models.DateTimeField(db_column='birthDate', blank=True, null=True)  # Field name made lowercase.
-    createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'authors'
-
-
-class BookUsers(models.Model):
-    createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-    userid = models.OneToOneField('Users', models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
-    bookid = models.ForeignKey('Books', models.CASCADE, db_column='bookId')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'book_users'
-        unique_together = (('userid', 'bookid'),)
-
-
-class Books(models.Model):
-    title = models.TextField(blank=True, null=True)
-    genre = models.TextField(blank=True, null=True)
-    authors = models.TextField(blank=True, null=True)
-    audiobook = models.TextField(db_column='audioBook', blank=True, null=True)  # Field name made lowercase.
-    photo = models.TextField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    imdb = models.TextField(blank=True, null=True)
-    youtube = models.TextField(blank=True, null=True)
-    createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
+class Book(models.Model):
+    title = models.TextField()
+    genre = models.TextField()
+    authors = models.TextField()
+    audiobook = models.TextField(db_column='audioBook')  # Field name made lowercase.
+    cover = models.TextField()
+    description = models.TextField()
+    imdblink = models.TextField(db_column='imdbLink')  # Field name made lowercase.
+    youtubelink = models.TextField(db_column='youtubeLink')  # Field name made lowercase.
+    goodreadslink = models.TextField(db_column='goodreadsLink')  # Field name made lowercase.
+    rating = models.FloatField()
+    ratings = models.IntegerField()
+    reviews = models.IntegerField()
 
     def __str__(self) -> str:
         return str(self.title)
 
     @staticmethod
     def json_interest_fields():
-        books = Books.objects.all()
+        books = Book.objects.all()
         data = dict()
         data["ID"] = dict()
         data["Title"] = dict()
         data["Genre"] = dict()
-        data["Authors"] = dict()
+        data["Rating"] = dict()
+        data["Description"] = dict()
+        data["Rating"] = dict()
         counter = 0
         for book in books:
             data["ID"][counter] = book.id
             data["Title"][counter] = book.title
             data["Genre"][counter] = book.genre
-            data["Authors"][counter] = book.authors
+            data["Rating"][counter] = book.rating
+            data["Description"][counter] = book.authors
+            data["Rating"][counter] = book.rating
             counter -=- 1
         return data
 
+    @staticmethod
+    def calculate_average_rating():
+        return Book.objects.all().aggregate(Avg('rating'))
+
     class Meta:
         managed = False
-        db_table = 'books'
+        db_table = 'Book'
         verbose_name = 'Book'
         verbose_name_plural = 'Books'
 
-@receiver(post_save, sender=Books)
+@receiver(post_save, sender=Book)
 def update_recommendations(sender, instance, **kwargs):
     try:
         with transaction.atomic():
@@ -86,67 +74,87 @@ def update_recommendations(sender, instance, **kwargs):
     except DatabaseError:
         print('[models] Could not finish updating recommendations.')
 
-class PreferenceUsers(models.Model):
-    createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-    userid = models.OneToOneField('Users', models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
-    preferenceid = models.ForeignKey('Preferences', models.CASCADE, db_column='preferenceId')  # Field name made lowercase.
+class GenrePreference(models.Model):
+    name = models.TextField()
+    userid = models.ForeignKey('User', models.CASCADE, db_column='userId')  # Field name made lowercase.
+
+    @staticmethod
+    def get_genres(id):
+        genres = GenrePreference.objects.get(userid = id)
+        for genre in genres:
+            yield genre.name
+    
+    @staticmethod
+    def get_user_genres(id):
+        return list(GenrePreference.get_genres(id))
 
     class Meta:
         managed = False
-        db_table = 'preference_users'
-        unique_together = (('userid', 'preferenceid'),)
+        db_table = 'GenrePreference'
 
 
-class Preferences(models.Model):
-    name = models.TextField(blank=True, null=True)
-    createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
+class SentimentPreference(models.Model):
+    name = models.TextField()
+    userid = models.ForeignKey('User', models.CASCADE, db_column='userId')  # Field name made lowercase.
 
-    class Meta:
-        managed = False
-        db_table = 'preferences'
-
-
-class UserBooks(models.Model):
-    createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-    bookid = models.OneToOneField(Books, models.CASCADE, db_column='bookId', primary_key=True)  # Field name made lowercase.
-    userid = models.ForeignKey('Users', models.CASCADE, db_column='userId')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'user_books'
-        unique_together = (('bookid', 'userid'),)
-
-
-class UserPreference(models.Model):
-    createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
-    preferenceid = models.OneToOneField(Preferences, models.CASCADE, db_column='preferenceId', primary_key=True)  # Field name made lowercase.
-    userid = models.ForeignKey('Users', models.CASCADE, db_column='userId')  # Field name made lowercase.
+    @staticmethod
+    def get_sentiments(id):
+        sentiments = SentimentPreference.objects.filter(userid = id)
+        for sentiment in sentiments:
+            yield sentiment.name
+    
+    @staticmethod
+    def get_user_sentiments(id):
+        preferences = list(SentimentPreference.get_sentiments(id))
+        if len(preferences) > 0:
+            return preferences
+        return ""
 
     class Meta:
         managed = False
-        db_table = 'user_preference'
-        unique_together = (('preferenceid', 'userid'),)
+        db_table = 'SentimentPreference'
 
+@receiver(post_save, sender=SentimentPreference)
+def update_user_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_user_recommendations
+            refresh_user_recommendations(SentimentPreference.get_user_sentiments(instance.userid), 
+                                         Book.calculate_average_rating(),
+                                         instance.userid)
+    except DatabaseError:
+        print('[models] Could not finish updating user recommendations.')
 
-class Users(models.Model):
-    username = models.TextField(blank=True, null=True)
-    email = models.TextField(blank=True, null=True)
-    password = models.TextField(blank=True, null=True)
-    createdat = models.DateTimeField(db_column='createdAt')  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt')  # Field name made lowercase.
+class User(models.Model):
+    username = models.TextField(unique=True)
+    email = models.TextField(unique=True)
+    password = models.TextField()
+
+    def __str__(self) -> str:
+        return self.username
 
     class Meta:
         managed = False
-        db_table = 'users'
+        db_table = 'User'
+
+class PrismaMigrations(models.Model):
+    id = models.CharField(primary_key=True, max_length=36)
+    checksum = models.CharField(max_length=64)
+    finished_at = models.DateTimeField(blank=True, null=True)
+    migration_name = models.CharField(max_length=255)
+    logs = models.TextField(blank=True, null=True)
+    rolled_back_at = models.DateTimeField(blank=True, null=True)
+    started_at = models.DateTimeField()
+    applied_steps_count = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = '_prisma_migrations'
 
 # THE FOLLOWING PART IS NOT GENERATED USING python manage.py inspectdb > models.py
 
-class Recommendations(models.Model):
-    book = models.ForeignKey(Books, models.CASCADE)
+class Recommendation(models.Model):
+    book = models.ForeignKey(Book, models.CASCADE)
     recommendations = JSONField(null=True)
 
     def __str__(self) -> str:
@@ -154,25 +162,45 @@ class Recommendations(models.Model):
     
     @staticmethod
     def get_recommendation(genres: list):
-        if genres is None:
-            return Recommendations.objects.all()
         recommendation_list = set()
         for genre in genres:
             try: 
-                related_books = Books.objects.get(genre=genre)
+                related_books = Book.objects.get(genre=genre)
                 for rb in related_books:
-                    current = Recommendations.objects.get(book=rb)
+                    current = Recommendation.objects.get(book=rb)
                     recommendation_list.add(current.recommendations[:3])
             except ObjectDoesNotExist:
                 pass
         if len(recommendation_list) > 0:
             random.shuffle(recommendation_list)
             return recommendation_list
-        return Recommendations.objects.all()
+        return Recommendation.objects.all()
+
+    @staticmethod
+    def get_book_recommendation(book_id):
+        return Recommendation.objects.filter(book__id = book_id)
     
     class Meta:
         verbose_name = 'Recommendation'
         verbose_name_plural = 'Recommendations'
+
+class UserRecommendation(models.Model):
+    user = models.ForeignKey(User, models.CASCADE)
+    recommendations = JSONField(null=True)
+
+    def __str__(self) -> str:
+        return str(self.user.username) + " Recommendation"
+
+    @staticmethod
+    def get_user_recommendation(preferences, minimum_rating, user_id):
+        recommendation_list = UserRecommendation.objects.filter(user__id = user_id)
+        if len(recommendation_list) > 0:
+            random.shuffle(recommendation_list)
+            return recommendation_list
+
+    class Meta:
+        verbose_name = 'UserRecommendation'
+        verbose_name_plural = 'UserRecommendations'
 
 # Application doesn't work. What do I do?
 # 1. cd project\recommendation_service
@@ -198,3 +226,28 @@ class Recommendations(models.Model):
 # 13. python manage.py runserver
 # Still doesn't work?
 # 14. Accept your fate.
+
+@receiver(post_save, sender=Book)
+def cache_books(sender, instance, **kwargs):
+    books = Book.objects.all()
+    cache.set('books', books)
+
+@receiver(post_save, sender=GenrePreference)
+def cache_genre_preferences(sender, instance, **kwargs):
+    genre_preferences = GenrePreference.objects.all()
+    cache.set('genre_preferences', genre_preferences)
+
+@receiver(post_save, sender=User)
+def cache_users(sender, instance, **kwargs):
+    users = User.objects.all()
+    cache.set('users', users)
+
+@receiver(post_save, sender=SentimentPreference)
+def cache_sentiment_preference(sender, instance, **kwargs):
+    sentiment_preferences = SentimentPreference.objects.all()
+    cache.set('sentiment_preferences', sentiment_preferences)
+
+@receiver(post_save, sender=Recommendation)
+def cache_recommendations(sender, instance, **kwargs):
+    recommendations = Recommendation.objects.all()
+    cache.set('recommendations', recommendations)

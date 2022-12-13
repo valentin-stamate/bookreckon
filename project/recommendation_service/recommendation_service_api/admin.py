@@ -9,8 +9,19 @@ def update_recommendations(modeladmin, request, queryset):
 
 update_recommendations.short_description = "Update Recommendations"
 
-class BooksAdmin(admin.ModelAdmin):
+def update_user_recommendations(modeladmin, request, queryset):
+    from recommendation_service_api.views import refresh_user_recommendations
+    refresh_user_recommendations(queryset)
+
+update_user_recommendations.short_description = "Update User Recommendations"
+
+class BookAdmin(admin.ModelAdmin):
     actions = [update_recommendations]
 
-admin.site.register(Books, BooksAdmin)
-admin.site.register(Recommendations)
+class UserAdmin(admin.ModelAdmin):
+    actions = [update_user_recommendations]
+
+admin.site.register(User, UserAdmin)
+admin.site.register(Book, BookAdmin)
+admin.site.register(Recommendation)
+admin.site.register(UserRecommendation)
