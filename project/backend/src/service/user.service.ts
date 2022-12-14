@@ -3,14 +3,11 @@ import {ResponseError} from "../middleware/middleware";
 import {ResponseMessage, StatusCode} from "../const/const";
 import {JwtService} from "./jwt.service";
 import {Mop} from "../mop/mop";
-
-import prisma from '../context/context'
+import {Context} from "../context/context";
 
 export class UserService {
 
-    private static prismaClient = prisma;
-
-    static async createUser(user: User) {
+    static async createUser(user: User, ctx: Context) {
         if (user.genres != null) {
             user.genres = {
                 create: user.genres,
@@ -23,15 +20,15 @@ export class UserService {
             } as any;
         }
 
-        await this.prismaClient.user.create({
-            data: user as any,
+        return await ctx.prisma.user.create({
+            data: user,
         });
     }
 
-    static async getUserInfo(id: number): Promise<any> {
+    static async getUserInfo(id: number, ctx: Context): Promise<any> {
         Mop.startCall("The monitor for getUser method from UserService is called with: " + id);
 
-        const result = await this.prismaClient.user.findFirst({
+        const result = await ctx.prisma.user.findFirst({
             where: {
                 id: id,
             },
@@ -51,13 +48,13 @@ export class UserService {
         return result;
     }
 
-    static async loginUser(user: User) {
+    static async loginUser(user: User, ctx: Context) {
         Mop.startCall("The monitor for loginUser method from UserService is called with: " + user);
-        if (user.username == null || user.password == null) {
+        if (user.username == null || user.password == null || user.username === '' || user.password === '') {
             throw new ResponseError(ResponseMessage.INVALID_CREDENTIALS, StatusCode.BAD_REQUEST);
         }
 
-        const userModel: User | null = await this.prismaClient.user.findFirst({
+        const userModel: User | null = await ctx.prisma.user.findFirst({
             where: {
                 username: user.username,
             }
@@ -72,13 +69,13 @@ export class UserService {
         return JwtService.generateAccessTokenForStudent(userModel);
     }
 
-    static async signupUser(user: User) {
+    static async signupUser(user: User, ctx: Context) {
         Mop.startCall("The monitor for signupUser method from UserService is called with: " + user);
-        if (user.username == null || user.email == null || user.password == null) {
+        if (user.username == null || user.email == null || user.password == null || user.username == '' || user.email == '' || user.password == '') {
             throw new ResponseError(ResponseMessage.COMPLETE_ALL_FIELDS, StatusCode.BAD_REQUEST);
         }
 
-        const existingUser = await this.prismaClient.user.findFirst({
+        const existingUser = await ctx.prisma.user.findFirst({
             where: {
                 OR: [
                     {
@@ -101,7 +98,7 @@ export class UserService {
             password: user.password,
         };
 
-        await this.prismaClient.user.create({
+        await ctx.prisma.user.create({
             data: {
                 username: user.username,
                 email: user.email,
@@ -114,20 +111,20 @@ export class UserService {
         return JwtService.generateAccessTokenForStudent(newUser as User);
     }
 
-    static async updatePreferences(userId: number, genres: string[], sentiments: string[]) {
-        await this.prismaClient.genrePreference.deleteMany({
+    static async updatePreferences(userId: number, genres: string[], sentiments: string[], ctx: Context) {
+        await ctx.prisma.genrePreference.deleteMany({
             where: {
                 userId: userId,
             }
         });
 
-        await this.prismaClient.sentimentPreference.deleteMany({
+        await ctx.prisma.sentimentPreference.deleteMany({
             where: {
                 userId: userId,
             }
         });
 
-        const user = await this.prismaClient.user.findFirst({
+        const user = await ctx.prisma.user.findFirst({
             where: {
                 id: userId,
             }
@@ -137,7 +134,7 @@ export class UserService {
             throw new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND);
         }
 
-        await this.prismaClient.genrePreference.createMany({
+        await ctx.prisma.genrePreference.createMany({
             data: genres.map(item => {
                 return {
                     name: item,
@@ -146,7 +143,7 @@ export class UserService {
             })
         });
 
-        await this.prismaClient.sentimentPreference.createMany({
+        await ctx.prisma.sentimentPreference.createMany({
             data: sentiments.map(item => {
                 return {
                     name: item,

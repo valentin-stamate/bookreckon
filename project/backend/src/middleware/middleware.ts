@@ -31,12 +31,12 @@ export class Middleware {
                 return;
             }
 
-            const existingUser = await UserService.getUserInfo(user.id as number);
-
-            if (existingUser == null) {
-                next(new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND));
-                return;
-            }
+            // const existingUser = await UserService.getUserInfo(user.id as number);
+            //
+            // if (existingUser == null) {
+            //     next(new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND));
+            //     return;
+            // }
 
             next();
         } catch (err) {

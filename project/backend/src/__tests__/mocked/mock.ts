@@ -1,34 +1,52 @@
-import {Author, Book, Preference, User} from "../../interface/interfaces";
+import {Book, GenrePreference, User} from "../../interface/interfaces";
 import {NextFunction, Request} from "express";
 
-export const MOCK_AUTHOR: Author = {
-    firstName: "George",
-    lastName: "Orwell",
-    birthDate: new Date("1903-06-25")
-}
+
 
 export const MOCK_BOOK: Book = {
+    id: 0,
     title: "1984",
     genre: "SF",
-    authors: "Vali Stamate",
+    authors: "George Orwell",
     audioBook: "youtube.com",
-    photo: 'photo_url',
+    cover: 'photo_url',
     description: "Winston Smith toes the Party line, rewriting history to satisfy the demands of the Ministry of Truth. With each lie he writes, Winston grows to hate the Party that seeks power for its own sake and persecutes those who dare to commit thoughtcrimes. But as he starts to think for himself, Winston can’t escape the fact that Big Brother is always watching...",
-    imdb: "https://www.imdb.com/title/tt0087803/",
-    youtube: "https://www.youtube.com/watch?v=T8BA7adK6XA&ab_channel=HDRetroTrailers"
+    imdbLink: "https://www.imdb.com/title/tt0087803/",
+    goodreadsLink: 'https://www.goodreads.com/book/show/40961427-1984',
+    youtubeLink: "https://www.youtube.com/watch?v=T8BA7adK6XA&ab_channel=HDRetroTrailers",
+    rating: 5.0,
+    ratings: 10,
+    reviews: 10
+}
+
+export const MOCK_GENRE: GenrePreference = {
+    id: 0,
+    name: 'SF'
+}
+
+export const MOCK_SENTIMENT: GenrePreference = {
+    id: 0,
+    name: 'a_sentiment'
 }
 
 export const MOCK_USER: User = {
-    id: 1,
+    id: 0,
     username: "Cezar",
     email: "cezarcez@outlook.com",
     password: "parola",
-    preferences: ["action", "automotive"]
+    genres: [MOCK_GENRE],
+    sentiments: [MOCK_SENTIMENT]
 }
 
-export const MOCK_PREFERENCE: Preference = {
-    title: 'romance',
+export const MOCK_USER_NO_USERNAME: User = {
+    id: 0,
+    username: '',
+    email: "cezarcez@outlook.com",
+    password: "parola",
+    genres: [MOCK_GENRE],
+    sentiments: [MOCK_SENTIMENT]
 }
+
 
 export const MOCK_REQUEST_ID_NULL: any = {
     body: {
