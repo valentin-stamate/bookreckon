@@ -47,14 +47,31 @@ export const MOCK_USER_NO_USERNAME: User = {
     sentiments: [MOCK_SENTIMENT]
 }
 
+export const MOCK_REQUEST: any = {
+    headers:{
+        Authorization: "anAuthToken"
+    },
+    body: {
+        id: 0,
+        username: "Cezar",
+        email: "cezarcez@outlook.com",
+        password: "parola",
+        genres: [MOCK_GENRE],
+        sentiments: [MOCK_SENTIMENT]
+    },
+};
 
 export const MOCK_REQUEST_ID_NULL: any = {
+    headers:{
+        Authorization: "anAuthToken"
+    },
     body: {
         id: undefined,
         username: "Cezar",
         email: "cezarcez@outlook.com",
         password: "parola",
-        preferences: ["action", "automotive"]
+        genres: [MOCK_GENRE],
+        sentiments: [MOCK_SENTIMENT]
     },
 };
 
@@ -64,7 +81,8 @@ export const MOCK_REQUEST_PREFERENCES_NULL: any = {
         username: "Cezar",
         email: "cezarcez@outlook.com",
         password: "parola",
-        preferences: undefined,
+        genres: [MOCK_GENRE],
+        sentiments: [MOCK_SENTIMENT]
     },
 };
 

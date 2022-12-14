@@ -51,6 +51,7 @@ export class UserService {
     static async loginUser(user: User, ctx: Context) {
         Mop.startCall("The monitor for loginUser method from UserService is called with: " + user);
         if (user.username == null || user.password == null || user.username === '' || user.password === '') {
+            console.log(user)
             throw new ResponseError(ResponseMessage.INVALID_CREDENTIALS, StatusCode.BAD_REQUEST);
         }
 
@@ -112,6 +113,11 @@ export class UserService {
     }
 
     static async updatePreferences(userId: number, genres: string[], sentiments: string[], ctx: Context) {
+
+        if (genres === null || sentiments === null ) {
+            throw new ResponseError(ResponseMessage.COMPLETE_ALL_FIELDS, StatusCode.BAD_REQUEST);
+        }
+
         await ctx.prisma.genrePreference.deleteMany({
             where: {
                 userId: userId,

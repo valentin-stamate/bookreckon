@@ -1,10 +1,8 @@
 import {UserService} from "../../service/user.service"
 import {MOCK_USER, MOCK_USER_NO_USERNAME} from "../mocked/mock"
 import { MockContext, Context, createMockContext } from '../../context/context'
-import {User} from "../../interface/interfaces";
 import {ResponseError} from "../../middleware/middleware";
 import {ResponseMessage, StatusCode} from "../../const/const";
-import {JwtService} from "../../service/jwt.service";
 
 describe('User service tests', function () {
 
@@ -12,6 +10,7 @@ describe('User service tests', function () {
     let ctx: Context
 
     beforeEach(() => {
+        jest.resetAllMocks()
         mockCtx = createMockContext()
         ctx = mockCtx as unknown as Context
     })
@@ -22,23 +21,9 @@ describe('User service tests', function () {
         await expect(UserService.createUser(MOCK_USER, ctx)).resolves.toEqual(MOCK_USER)
     })
 
-    test('Get user info', async () =>{
-        // @ts-ignore
-        mockCtx.prisma.user.findFirst.mockResolvedValue(MOCK_USER)
-        // @ts-ignore
-        await expect(UserService.getUserInfo(MOCK_USER.id, ctx)).resolves.toEqual(MOCK_USER)
-    })
-
-    test('Get user info - Not found', async () =>{
-        // @ts-ignore
-        mockCtx.prisma.user.findFirst.mockRejectedValue(new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND))
-        // @ts-ignore
-        await expect(UserService.getUserInfo(0, ctx)).rejects.toEqual(new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND))
-    })
-
     test('Login user - Not found', async () =>{
         // @ts-ignore
-        mockCtx.prisma.user.findFirst.mockRejectedValue(new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND))
+        mockCtx.prisma.user.findFirst.mockReturnValue(null)
         await expect(UserService.loginUser(MOCK_USER, ctx)).rejects.toEqual(new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND))
     })
 
@@ -83,5 +68,19 @@ describe('User service tests', function () {
         mockCtx.prisma.user.findFirst.mockReturnValue(MOCK_USER)
         // @ts-ignore
         await expect(UserService.updatePreferences(MOCK_USER.id, [], [], ctx)).resolves
+    })
+
+    test('Get user info', async () =>{
+        // @ts-ignore
+        mockCtx.prisma.user.findFirst.mockResolvedValue(MOCK_USER)
+        // @ts-ignore
+        await expect(UserService.getUserInfo(MOCK_USER.id, ctx)).resolves.toEqual(MOCK_USER)
+    })
+
+    test('Get user info - Not found', async () =>{
+        // @ts-ignore
+        mockCtx.prisma.user.findFirst.mockRejectedValue(new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND))
+        // @ts-ignore
+        await expect(UserService.getUserInfo(0, ctx)).rejects.toEqual(new ResponseError(ResponseMessage.NOT_FOUND, StatusCode.NOT_FOUND))
     })
 });
