@@ -80,13 +80,16 @@ class GenrePreference(models.Model):
 
     @staticmethod
     def get_genres(id):
-        genres = GenrePreference.objects.get(userid = id)
+        genres = GenrePreference.objects.filter(userid = id)
         for genre in genres:
             yield genre.name
     
     @staticmethod
     def get_user_genres(id):
-        return list(GenrePreference.get_genres(id))
+        genres = list(GenrePreference.get_genres(id))
+        if len(genres) > 0:
+            return genres
+        return None
 
     class Meta:
         managed = False
@@ -108,7 +111,7 @@ class SentimentPreference(models.Model):
         preferences = list(SentimentPreference.get_sentiments(id))
         if len(preferences) > 0:
             return preferences
-        return ""
+        return None
 
     class Meta:
         managed = False
@@ -192,12 +195,11 @@ class UserRecommendation(models.Model):
         return str(self.user.username) + " Recommendation"
 
     @staticmethod
-    def get_user_recommendation(preferences, minimum_rating, user_id):
+    def get_user_recommendation(user_id):
         recommendation_list = UserRecommendation.objects.filter(user__id = user_id)
         if len(recommendation_list) > 0:
             random.shuffle(recommendation_list)
             return recommendation_list
-
     class Meta:
         verbose_name = 'UserRecommendation'
         verbose_name_plural = 'UserRecommendations'

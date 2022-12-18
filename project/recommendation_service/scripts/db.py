@@ -1,10 +1,11 @@
 from recommendation_service_api.models import Book, Recommendation
 
-import os
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from sklearn.neighbors import NearestNeighbors
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 def recommendation_calc():
     books = Book.json_interest_fields()
@@ -24,38 +25,35 @@ def recommendation_calc():
         results[row_id].pop(results[row_id].index((row_id)))
     return results
 
-def improved_recommendation_calc(preferences, minimum_rating, user_id):
+def improved_recommendation_calc(preferences, minimum_rating, genres, user_id):
+    # Create a DataFrame from the dictionary of books
     books = Book.json_interest_fields()
     df = pd.DataFrame.from_dict(books)
 
     minimum_rating = minimum_rating["rating__avg"]
 
-    df["Preferences"] = preferences
+    if genres is None:
+        df[(df['Rating'] >= minimum_rating)]
+    else:
+        # Filter DataFrame to include books that have a higher rating than the minimum rating
+        # and have at least one of the genres in the genre list
+        df = df[(df['Rating'] >= minimum_rating) & (df['Genre'].isin(genres))]
 
-    # Use TfidfVectorizer to create a matrix of tf-idf values for the description and preferences columns
-    tv = TfidfVectorizer(analyzer='word', ngram_range=(1, 3), min_df=0, stop_words='english')
-    tfidf_matrix = tv.fit_transform(df["Description"] + ' ' + df["Preferences"])
+    if preferences is None:
+        df = df.sort_values(by='Rating', ascending=False)
+        return df.head(10)
 
-    # Calculate the cosine similarity between the tf-idf matrix and itself
-    similarity_scores = linear_kernel(tfidf_matrix, tfidf_matrix)
+    # Create a matrix of term frequency-inverse document frequency (TF-IDF) values for the book descriptions
+    count_vectorizer = CountVectorizer()
+    sparse_matrix = count_vectorizer.fit_transform(df['Description'])
 
-    # Create a new DataFrame with the similarity scores and the genres
-    sim_df = pd.DataFrame(similarity_scores, columns=df["Title"], index=df["Title"])
-    sim_df["Genre"] = df["Genre"]
+    # Create a vector representing the user's preferences
+    preferences_vector = count_vectorizer.transform(preferences)
 
-    # Filter the DataFrame by the minimum rating and sort it in descending order
-    sim_df = sim_df[df["Rating"] >= minimum_rating].sort_values(ascending=False)
+    # Calculate the cosine similarity between the matrix of TF-IDF values and the vector of preferences
+    similarities = cosine_similarity(sparse_matrix, preferences_vector)
 
-    # Use NearestNeighbors to find the 10 closest books based on the genres
-    nn = NearestNeighbors(n_neighbors=10, algorithm='true', metric='cosine')
-    nn.fit(sim_df["Genre"])
-    distances, indices = nn.kneighbors(sim_df["Genre"])
-
-    results = [sim_df.index[index] for index in indices[0][1:]]
-    print(results)
-
-# This script uses Pandas to read the books from a CSV file and create a DataFrame. It then gets the input preferences and minimum rating from the user, and adds a new column to the DataFrame with the preferences.
-
-# Next, it uses scikit-learn's TfidfVectorizer to create a matrix of tf-idf values for the description and preferences columns, and calculates the cosine similarity between the tf-idf matrix and itself. This is used to create a new DataFrame with the similarity scores and the genres of each book.
-
-# The DataFrame is then filtered by the minimum rating and sorted in descending order, and scikit-learn's NearestNeighbors is used to find the 10 closest books based on the genres. Finally, the recommended books are printed.
+    df['similarity'] = similarities
+    # Sort the DataFrame by the similarity column in descending order
+    df = df.sort_values(by='similarities', ascending=False)
+    return df.head(10)

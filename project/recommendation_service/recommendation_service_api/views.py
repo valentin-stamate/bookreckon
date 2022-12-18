@@ -7,7 +7,7 @@ from django.db import DatabaseError, transaction
 
 
 from recommendation_service_api.serializers import BookSerializer, RecommendationSerializer, UserRecommendationSerializer
-from recommendation_service_api.models import Book, Recommendation, UserRecommendation, SentimentPreference
+from recommendation_service_api.models import Book, Recommendation, UserRecommendation, SentimentPreference, GenrePreference
 import scripts.db as rc
 import threading
 
@@ -38,9 +38,10 @@ class UserRecommendationViewSet(viewsets.ModelViewSet):
     serializer_class = UserRecommendationSerializer
 
     def get_queryset(self):
-        genres = self.request.query_params.get('genres')
+        user_id = self.request.query_params.get('id')
+        print(user_id)
 
-        queryset = UserRecommendation.get_recommendation(genres)
+        queryset = UserRecommendation.get_user_recommendation(user_id)
 
         return queryset
 
@@ -64,16 +65,23 @@ def refresh_recommendations():
 
 def refresh_user_recommendations_thread(queryset):
     for qs in queryset:
-        results = rc.improved_recommendation_calc(SentimentPreference.get_user_sentiments(qs.id), Book.calculate_average_rating(), qs.id)
-        books = Book.objects.all()
+        results = rc.improved_recommendation_calc(SentimentPreference.get_user_sentiments(qs.id),
+                                                 Book.calculate_average_rating(),
+                                                 GenrePreference.get_user_genres(qs.id),
+                                                 qs.id)
+        results = results.to_dict()['ID']
         try:
             with transaction.atomic():
-                UserRecommendation.objects.get(id=qs.id).delete()
-                for book in books:
-                    rec = UserRecommendation()
-                    rec.user = qs.user
-                    rec.recommendations = results[book.id]
-                    rec.save()
+                if UserRecommendation.objects.filter(id=qs.id).exists():
+                    UserRecommendation.objects.get(id=qs.id).delete()
+                rec = UserRecommendation()
+                rec.user = qs
+                recommendations = list()
+                for book_id in results.values():
+                    book = Book.objects.get(id=book_id)
+                    recommendations.append(book.id)
+                rec.recommendations = recommendations
+                rec.save()
         except DatabaseError:
             print('[view] Could not finish updating user recommendations.')
 

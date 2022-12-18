@@ -8,7 +8,7 @@ from recommendation_service_api.views import BookViewSet, RecommendationViewSet,
 router = routers.DefaultRouter()
 router.register(r'books', BookViewSet)
 router.register(r'recommendation', RecommendationViewSet)
-router.register(r'recommendation', UserRecommendationViewSet)
+router.register(r'user_recommendation', UserRecommendationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
