@@ -1,4 +1,14 @@
 terraform {
+  backend "s3" {
+    bucket = "terraform-bookrecon-states"
+    key = "bookrecon/secrets/terraform.tfstate"
+    region = "us-east-1"
+
+    # DynamoDB Configuration
+    dynamodb_table = "terraform-bookrecon-locks"
+    encrypt = true
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"

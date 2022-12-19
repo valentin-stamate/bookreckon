@@ -4,7 +4,7 @@ What's in here are Terraform modules (which will be instantiated in order to be 
 infrastructure of BookRecon.
 
 ## How to get it running
-- In that order,
+- In that order, for each folder, starting with `init`,
 ```bash
 # What this does is initializing the Terraform module in order to be instantiated.
 # More precisely, it will download all the required providers that the module needs.
