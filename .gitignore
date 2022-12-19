@@ -1,3 +1,7 @@
+.terra*
+*.tfstate
+*.tfstate.backup
+
 .vscode
 .gradle
 .idea
