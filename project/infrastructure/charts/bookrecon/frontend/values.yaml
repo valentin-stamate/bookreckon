@@ -2,17 +2,18 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+replicaCount: 2
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+  repository: 316412051370.dkr.ecr.us-east-1.amazonaws.com/bookrecon-prod-terraform-ecr
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "frontend"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+namespace: bookrecon
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -37,24 +38,39 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 80
+  type: LoadBalancer
+  port: 4200
 
 ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  enabled: true
+  className: "alb"
+  annotations:
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:316412051370:certificate/5b4d461f-667c-4164-a0bc-e6bb408d0852
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
   hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
+  - host: www.copouroguearmy.studio # change it to your host name here
+    http:
+    paths:
+    - path: /*
+      pathType: ImplementationSpecific
+      backend:
+        service:
+          name: ssl-redirect
+          port:
+            name: use-annotation
+    - path: /*
+      pathType: ImplementationSpecific
+      backend:
+        service:
+          name: frontend
+          port:
+            name: http      
+  tls:
   #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+   - hosts:
+      - www.copouroguearmy.studio
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
