@@ -1,6 +1,7 @@
 .terra*
 *.tfstate
 *.tfstate.backup
+*kubeconfig*
 
 .vscode
 .gradle
