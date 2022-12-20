@@ -14,6 +14,11 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+environment:
+  connectionStringSecret:
+    name: "db-connection-string"
+    key: "connection-string"
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -37,8 +42,8 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 80
+  type: NodePort
+  port: 8080
 
 ingress:
   enabled: false

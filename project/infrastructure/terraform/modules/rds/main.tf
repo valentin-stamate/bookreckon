@@ -19,18 +19,6 @@ resource "aws_security_group" "rds_sg" {
   )
 }
 
-# data "aws_subnet" "private_subnet1" {
-#   id = "subnet-018e87cc5e124c9fe"
-# }
-
-# data "aws_subnet" "private_subnet2" {
-#   id = "subnet-0cdf9046db0d2dded"
-# }
-
-# data "aws_subnet" "private_subnet3" {
-#   id = "subnet-0dea40ef3b671559a"
-# }
-
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "${var.tags["Inventory"]}-${var.tags["Environment"]}-${var.tags["Creator"]}-${local.app_role}-subnet-group"
   subnet_ids = var.private_subnets
