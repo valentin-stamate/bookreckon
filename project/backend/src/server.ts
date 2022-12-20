@@ -14,7 +14,7 @@ const env = process.env;
 
 const app = express();
 const port = env.PORT || 8090;
-const host = `http://localhost:${port}`
+const host = `http://0.0.0.0:${port}`
 
 // populateDatabase()
 //     .then(() => {
@@ -61,5 +61,5 @@ app.get('/api/book/:bookId', Middleware.userMiddleware, BookController.getBook);
 app.use(Middleware.errorHandler);
 
 app.listen(port, () => {
-    console.log(`Server started at ${host}`);
+    console.log(`INFO\tServer successfully started. You can talk with it at ${host}.`);
 });
