@@ -1,3 +1,5 @@
 locals {
-  config = yamldecode(file("${path.module}/../config.yaml"))
+  env = yamldecode(file("${path.module}/../env.yaml"))
+  tags = local.env["tags"]
+  app_role = "terraform-state"
 }

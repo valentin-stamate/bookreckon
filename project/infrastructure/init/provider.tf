@@ -1,3 +1,3 @@
 provider "aws" {
-  region = local.config["aws_region"]
+  region = local.env["aws_region"]
 }
