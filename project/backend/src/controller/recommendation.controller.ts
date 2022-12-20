@@ -31,8 +31,26 @@ export class RecommendationController {
         const body = req.body;
         const keywords = body.keywords;
 
-        try{
+        try {
             const result = await RecommendationService.getBaseRecommendation(keywords);
+
+            res.header(Headers.CONTENT_TYPE, ContentType.JSON);
+            res.end(JSON.stringify(result));
+        } catch(err) {
+            next(err)
+        }
+
+    }
+
+    @beforeMethod(LogAspect.logBefore)
+    @afterMethod(LogAspect.logAfter)
+    @onException(LogAspect.logException)
+    static async getBooksRecommendationBasedOnBook(req: Request<any>, res: Response, next: NextFunction){
+        const body = req.body;
+        const id = body.id;
+
+        try {
+            const result = await RecommendationService.getBooksRecommendationsBasedOkBooks(id);
 
             res.header(Headers.CONTENT_TYPE, ContentType.JSON);
             res.end(JSON.stringify(result));

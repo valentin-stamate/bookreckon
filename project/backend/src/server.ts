@@ -13,7 +13,7 @@ config();
 const env = process.env;
 
 const app = express();
-const port = env.PORT || 8080;
+const port = env.PORT || 8090;
 const host = `http://localhost:${port}`
 
 // populateDatabase()
@@ -51,6 +51,7 @@ app.post('/api/user/signup', Middleware.visitorMiddleware, UserController.signup
 app.put('/api/user/edit-preference', Middleware.userMiddleware, UserController.editUserPreference);
 app.get('/api/user/recommendations', Middleware.userMiddleware, RecommendationController.getRecommendations);
 app.post('/api/user/base-recommendations', RecommendationController.getBaseRecommendation);
+app.post('/api/user/book-recommendations', Middleware.userMiddleware, RecommendationController.getBooksRecommendationBasedOnBook);
 app.get(`/api/user/info`, Middleware.userMiddleware, UserController.getUserInfo);
 app.get('/api/book/:bookId', Middleware.userMiddleware, BookController.getBook);
 

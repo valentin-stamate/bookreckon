@@ -7,16 +7,6 @@ export class RecommendationService {
     private static prismaClient = new PrismaClient();
 
     public static async getRecommendations(userId: number): Promise<Book[]> {
-        const user = await this.prismaClient.user.findFirst({
-            where: {
-                id: userId,
-            },
-            include: {
-                genres: true,
-                sentiments: true,
-            }
-        });
-
         const result = (await axios.post('http://localhost:8080/api/user_recommendation', {
             id: userId,
         })).data;
@@ -43,6 +33,14 @@ export class RecommendationService {
                 OR: searchByGenre.concat(searchByDescription as any),
             }
         });
+    }
+
+    public static async getBooksRecommendationsBasedOkBooks(bookId: number): Promise<Book[]> {
+        const result = (await axios.post('http://localhost:8080/api/recommendation', {
+            id: bookId,
+        })).data;
+
+        return result as Book[];
     }
 
 }
