@@ -37,7 +37,7 @@ module "eks" {
   worker_groups = [
     {
       name                = "eks-worker-group"
-      instance_type       = "t3a.medium"
+      instance_type       = "c6a.xlarge"
       post_bootstrap_user_data = <<-EOT
       cd /tmp
       sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
@@ -45,8 +45,8 @@ module "eks" {
       sudo systemctl start amazon-ssm-agent
       EOT
       additional_security_group_ids = [aws_security_group.worker_group.id]
-      asg_desired_capacity          = "2"
-      asg_max_size                  = "3"
+      asg_desired_capacity          = "1"
+      asg_max_size                  = "2"
       asg_min_size                  = "1"
       key_name                      = "Manjaro"
       public_ip                     = true
