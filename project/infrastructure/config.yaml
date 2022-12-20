@@ -1,3 +1,0 @@
-aws_region: "us-east-1"
-s3_state_bucket: "terraform-bookrecon-states"
-dynamodb_locks: "terraform-bookrecon-locks"
