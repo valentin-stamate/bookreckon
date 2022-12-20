@@ -7,6 +7,7 @@ module "vpc" {
   public_subnets     = local.env["vpc"]["public_subnets"]
   # database_subnets = local.env["vpc"]["database_subnets"]
   cluster_name = module.eks.cluster_name
+  # cluster_name = "bookrecon-prod-terraform-eks"
   tags         = local.env["tags"]
 }
 

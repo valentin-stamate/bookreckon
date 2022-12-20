@@ -7,7 +7,7 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 resource "aws_security_group" "worker_group" {
-  name_prefix = "${var.tags["Inventory"]}-${var.tags["Environment"]}-${var.tags["Creator"]}-${local.worker_name}-sg"
+  name_prefix = "eks-worker-group-sg"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -16,7 +16,7 @@ resource "aws_security_group" "worker_group" {
     protocol  = "tcp"
 
     cidr_blocks = [
-      var.cidr_range,
+      var.cidr_range
     ]
   }
 }
@@ -26,7 +26,7 @@ module "eks" {
   version = "~> 17.0"
 
   cluster_name      = "${var.tags["Inventory"]}-${var.tags["Environment"]}-${var.tags["Creator"]}-${local.app_role}"
-  cluster_version   = "1.24"
+  cluster_version   = "1.22"
   vpc_id            = var.vpc_id
   subnets           = var.public_subnets
   workers_role_name = "${var.tags["Inventory"]}-${var.tags["Environment"]}-${var.tags["Creator"]}-${local.worker_name}"
@@ -36,23 +36,20 @@ module "eks" {
 
   worker_groups = [
     {
-      name                = "${var.tags["Inventory"]}-${var.tags["Environment"]}-${var.tags["Creator"]}-${local.worker_name}-group"
-      instance_type       = "t2.medium"
-      additional_userdata = <<EOF
-#!/bin/bash
-set -o xtrace
-/etc/eks/bootstrap.sh ${var.tags["Inventory"]}-${var.tags["Environment"]}-${var.tags["Creator"]}-${local.app_role}
-EOF
-
+      name                = "eks-worker-group"
+      instance_type       = "c7g.xlarge"
       post_bootstrap_user_data = <<-EOT
       cd /tmp
       sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
       sudo systemctl enable amazon-ssm-agent
       sudo systemctl start amazon-ssm-agent
       EOT
-
       additional_security_group_ids = [aws_security_group.worker_group.id]
-      asg_desired_capacity          = 1
+      asg_desired_capacity          = "1"
+      asg_max_size                  = "2"
+      asg_min_size                  = "1"
+      key_name                      = "Manjaro"
+      public_ip                     = true
     }
   ]
 
