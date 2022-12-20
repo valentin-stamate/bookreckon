@@ -17,6 +17,9 @@ from django.db.models import Avg
 from jsonfield import JSONField
 import random
 
+from typing import List
+from security.utils import AESCipher
+
 class Book(models.Model):
     title = models.TextField()
     genre = models.TextField()
@@ -35,21 +38,28 @@ class Book(models.Model):
         return str(self.title)
 
     @staticmethod
+    def is_cached() -> bool:
+        if cache.get('books'):
+            return True
+        return False
+
+    @staticmethod
     def json_interest_fields():
-        books = Book.objects.all()
+        if Book.is_cached():
+            books = cache.get('books')
+        else:
+            books = Book.objects.all() 
         data = dict()
         data["ID"] = dict()
         data["Title"] = dict()
         data["Genre"] = dict()
         data["Rating"] = dict()
         data["Description"] = dict()
-        data["Rating"] = dict()
         counter = 0
         for book in books:
             data["ID"][counter] = book.id
             data["Title"][counter] = book.title
             data["Genre"][counter] = book.genre
-            data["Rating"][counter] = book.rating
             data["Description"][counter] = book.authors
             data["Rating"][counter] = book.rating
             counter -=- 1
@@ -59,24 +69,34 @@ class Book(models.Model):
     def calculate_average_rating():
         return Book.objects.all().aggregate(Avg('rating'))
 
+    def encrypt_genres(self, key: bytes) -> List[bytes]:
+        aes = AESCipher()
+        aes.new(key)
+        return list(aes.encrypt(self.genre))
+
+    def encrypt_rest(self, key: bytes):
+        aes = AESCipher()
+        aes.new(key)
+
+        pt = Book.objects.get(pk=self.pk)
+
+        return aes.encrypt(pt.encode())
+
     class Meta:
         managed = False
         db_table = 'Book'
         verbose_name = 'Book'
         verbose_name_plural = 'Books'
 
-@receiver(post_save, sender=Book)
-def update_recommendations(sender, instance, **kwargs):
-    try:
-        with transaction.atomic():
-            from recommendation_service_api.views import refresh_recommendations
-            refresh_recommendations()
-    except DatabaseError:
-        print('[models] Could not finish updating recommendations.')
-
 class GenrePreference(models.Model):
     name = models.TextField()
     userid = models.ForeignKey('User', models.CASCADE, db_column='userId')  # Field name made lowercase.
+
+    @staticmethod
+    def is_cached() -> bool:
+        if cache.get('genre_preferences'):
+            return True
+        return False
 
     @staticmethod
     def get_genres(id):
@@ -95,10 +115,15 @@ class GenrePreference(models.Model):
         managed = False
         db_table = 'GenrePreference'
 
-
 class SentimentPreference(models.Model):
     name = models.TextField()
     userid = models.ForeignKey('User', models.CASCADE, db_column='userId')  # Field name made lowercase.
+
+    @staticmethod
+    def is_cached() -> bool:
+        if cache.get('sentiment_preferences'):
+            return True
+        return False
 
     @staticmethod
     def get_sentiments(id):
@@ -117,21 +142,16 @@ class SentimentPreference(models.Model):
         managed = False
         db_table = 'SentimentPreference'
 
-@receiver(post_save, sender=SentimentPreference)
-def update_user_recommendations(sender, instance, **kwargs):
-    try:
-        with transaction.atomic():
-            from recommendation_service_api.views import refresh_user_recommendations
-            refresh_user_recommendations(SentimentPreference.get_user_sentiments(instance.userid), 
-                                         Book.calculate_average_rating(),
-                                         instance.userid)
-    except DatabaseError:
-        print('[models] Could not finish updating user recommendations.')
-
 class User(models.Model):
     username = models.TextField(unique=True)
     email = models.TextField(unique=True)
     password = models.TextField()
+
+    @staticmethod
+    def is_cached() -> bool:
+        if cache.get('users'):
+            return True
+        return False
 
     def __str__(self) -> str:
         return self.username
@@ -164,6 +184,12 @@ class Recommendation(models.Model):
         return str(self.book.title) + " Recommendation"
     
     @staticmethod
+    def is_cached() -> bool:
+        if cache.get('recommendations'):
+            return True
+        return False
+
+    @staticmethod
     def get_recommendation(genres: list):
         recommendation_list = set()
         for genre in genres:
@@ -193,6 +219,12 @@ class UserRecommendation(models.Model):
 
     def __str__(self) -> str:
         return str(self.user.username) + " Recommendation"
+
+    @staticmethod
+    def is_cached() -> bool:
+        if cache.get('user_recommendations'):
+            return True
+        return False
 
     @staticmethod
     def get_user_recommendation(user_id):
@@ -229,27 +261,61 @@ class UserRecommendation(models.Model):
 # Still doesn't work?
 # 14. Accept your fate.
 
-@receiver(post_save, sender=Book)
-def cache_books(sender, instance, **kwargs):
-    books = Book.objects.all()
-    cache.set('books', books)
-
-@receiver(post_save, sender=GenrePreference)
-def cache_genre_preferences(sender, instance, **kwargs):
-    genre_preferences = GenrePreference.objects.all()
-    cache.set('genre_preferences', genre_preferences)
-
 @receiver(post_save, sender=User)
 def cache_users(sender, instance, **kwargs):
     users = User.objects.all()
     cache.set('users', users)
 
-@receiver(post_save, sender=SentimentPreference)
-def cache_sentiment_preference(sender, instance, **kwargs):
-    sentiment_preferences = SentimentPreference.objects.all()
-    cache.set('sentiment_preferences', sentiment_preferences)
-
 @receiver(post_save, sender=Recommendation)
 def cache_recommendations(sender, instance, **kwargs):
     recommendations = Recommendation.objects.all()
     cache.set('recommendations', recommendations)
+
+@receiver(post_save, sender=UserRecommendation)
+def cache_user_recommendations(sender, instance, **kwargs):
+    recommendations = UserRecommendation.objects.all()
+    cache.set('user_recommendations', recommendations)
+
+def cache_sentiment_preference():
+    sentiment_preferences = SentimentPreference.objects.all()
+    cache.set('sentiment_preferences', sentiment_preferences)
+
+def cache_genre_preferences():
+    genre_preferences = GenrePreference.objects.all()
+    cache.set('genre_preferences', genre_preferences)
+
+def cache_books():
+    books = Book.objects.all()
+    cache.set('books', books)
+
+@receiver(post_save, sender=SentimentPreference)
+def update_user_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_user_recommendations
+            user = User.objects.get(id=instance.userid)
+            refresh_user_recommendations(user)
+    except DatabaseError:
+        print('[models] Could not finish updating user recommendations.')
+    cache_sentiment_preference()
+
+@receiver(post_save, sender=GenrePreference)
+def update_user_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_user_recommendations
+            user = User.objects.get(id=instance.userid)
+            refresh_user_recommendations(user)
+    except DatabaseError:
+        print('[models] Could not finish updating user recommendations.')
+    cache_genre_preferences()
+    
+@receiver(post_save, sender=Book)
+def update_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_recommendations
+            refresh_recommendations()
+    except DatabaseError:
+        print('[models] Could not finish updating recommendations.')
+    cache_books()

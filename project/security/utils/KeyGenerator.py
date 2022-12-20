@@ -9,5 +9,5 @@ class KeyGenerator(ABC):
 
     @staticmethod
     @abstractmethod
-    def generate_public_key(sec_param: int) -> (bytes, bytes):
+    def generate_public_key(sec_param: int):
         pass

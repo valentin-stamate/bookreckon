@@ -8,7 +8,7 @@ class RandomKeyGenerator(KeyGenerator):
     @on_exception
     @after_method
     @before_method
-    def generate_public_key(sec_param: int) -> (bytes, bytes):
+    def generate_public_key(sec_param: int):
         return random.getrandbits(sec_param), random.getrandbits(sec_param)
 
     @staticmethod
