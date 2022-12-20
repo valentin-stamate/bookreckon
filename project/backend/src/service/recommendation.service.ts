@@ -17,8 +17,30 @@ export class RecommendationService {
             }
         });
 
-        const result = (await axios.post('', {})).data;
+        // const result = (await axios.post('', {})).data;
 
-        return result as Book[];
+        return [] as Book[];
     }
+    public static async getBaseRecommendation(keywords: string[]): Promise<Book[]> {
+        const searchByGenre = keywords.map(item => {
+            return {
+                genre: item,
+            }
+        });
+
+        const searchByDescription = keywords.map(item => {
+            return {
+                description: {
+                    contains: item,
+                }
+            }
+        });
+
+        return await this.prismaClient.book.findMany({
+            where: {
+                OR: searchByGenre.concat(searchByDescription as any),
+            }
+        });
+    }
+
 }

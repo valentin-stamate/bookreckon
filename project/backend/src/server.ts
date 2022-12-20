@@ -50,6 +50,7 @@ app.post('/api/user/login', Middleware.visitorMiddleware, UserController.loginUs
 app.post('/api/user/signup', Middleware.visitorMiddleware, UserController.signupUser);
 app.put('/api/user/edit-preference', Middleware.userMiddleware, UserController.editUserPreference);
 app.get('/api/user/recommendations', Middleware.userMiddleware, RecommendationController.getRecommendations);
+app.post('/api/user/base-recommendations', RecommendationController.getBaseRecommendation);
 app.get(`/api/user/info`, Middleware.userMiddleware, UserController.getUserInfo);
 app.get('/api/book/:bookId', Middleware.userMiddleware, BookController.getBook);
 
