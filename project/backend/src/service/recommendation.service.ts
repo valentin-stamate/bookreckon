@@ -17,9 +17,11 @@ export class RecommendationService {
             }
         });
 
-        // const result = (await axios.post('', {})).data;
+        const result = (await axios.post('http://localhost:8080/api/user_recommendation', {
+            id: userId,
+        })).data;
 
-        return [] as Book[];
+        return result as Book[];
     }
     public static async getBaseRecommendation(keywords: string[]): Promise<Book[]> {
         const searchByGenre = keywords.map(item => {
