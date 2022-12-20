@@ -4,9 +4,9 @@ from SearchableEncryption import SearchableEncryptionScheme
 
 
 class SearchableEncryptionProtocol:
-    def __init__(self, scheme: SearchableEncryptionScheme):
+    def __init__(self, scheme: SearchableEncryptionScheme, key_prf: bytes):
         self.scheme = scheme
-        self.key_prf = b''
+        self.key_prf = key_prf
         self.delta = (b'', {})
 
     # realizam setup-ul schemei de cautare pornind de la categoriile cartii
