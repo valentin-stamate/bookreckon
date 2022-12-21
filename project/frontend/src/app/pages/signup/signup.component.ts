@@ -27,7 +27,7 @@ export class SignupComponent implements OnInit {
 
     CookieService.setCookie(Cookies.AUTH, token);
 
-    location.href = "/home";
+    location.href = "/genre-selection";
   }
 
 }
