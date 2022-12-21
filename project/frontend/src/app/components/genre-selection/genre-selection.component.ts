@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {Genre, Sentiment} from "../../service/interfaces";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Genre, PreferencePayload, Sentiment, UserSettings} from "../../service/interfaces";
 
 const defaultSentiments:Sentiment[] = [
-  {name: "happy", checked: false},
-  {name: "sad", checked: false},
-  {name: "aldehida", checked: false},
+  {name: "Happy", checked: false},
+  {name: "Sad", checked: false},
+  {name: "Scary", checked: false},
 ];
 const defaultGenres:Genre[] = [
   {name: "Action", checked: false},
@@ -21,21 +21,65 @@ export class GenreSelectionComponent implements OnInit {
   sentiments = defaultSentiments;
   genres = defaultGenres;
 
+  @Input()
+  userSettings: UserSettings = undefined as any;
+
+  @Output()
+  payloadEmitter = new EventEmitter<PreferencePayload>();
+
   customSentiments: string[] = [];
   customGenres:  string[] = [];
   constructor() { }
 
   ngOnInit(): void {
+    if (this.userSettings == null) {
+      return;
+    }
+
+    const sentiments = this.userSettings.sentiments;
+    const genres = this.userSettings.genres;
+
+    for (let sentiment of this.sentiments) {
+      const found = sentiments.find(item => item.name.toLowerCase() === sentiment.name.toLowerCase());
+
+      if (found != null) {
+        sentiment.checked = true;
+      }
+    }
+
+    for (let genre of this.genres) {
+      const found = genres.find(item => item.name.toLowerCase() === genre.name.toLowerCase());
+
+      if (found != null) {
+        genre.checked = true;
+      }
+    }
+
+    this.customSentiments = this.userSettings.sentiments
+      .filter(item => {
+        const found = this.sentiments.find(it => it.name === item.name);
+
+        return !found;
+      })
+      .map(item => item.name);
+
+    this.customGenres = this.userSettings.genres
+      .filter(item => {
+        const found = this.genres.find(it => it.name === item.name);
+
+        return !found;
+      })
+      .map(item => item.name);
   }
 
   onPressedCheckboxSentiments(item: Sentiment): any {
     item.checked = !item.checked;
-    console.log(this.sentiments);
+    this.onPayloadRefresh();
   }
 
   onPressedCheckboxGenres(item: Genre): any {
     item.checked = !item.checked;
-    console.log(this.genres);
+    this.onPayloadRefresh();
   }
 
   addCustomSentiment(input: HTMLInputElement): any {
@@ -45,7 +89,8 @@ export class GenreSelectionComponent implements OnInit {
       this.customSentiments = this.customSentiments.concat(splittedInput);
       input.value = "";
     }
-    console.log(this.customSentiments);
+
+    this.onPayloadRefresh();
   }
 
   addCustomGenre(input: HTMLInputElement): any {
@@ -55,15 +100,18 @@ export class GenreSelectionComponent implements OnInit {
       this.customGenres = this.customGenres.concat(splittedInput);
       input.value = "";
     }
-    console.log(this.customGenres);
+
+    this.onPayloadRefresh();
   }
 
   deleteCustomSentiment(inputItem: string): any {
     this.customSentiments = this.customSentiments.filter(item => item !== inputItem);
+    this.onPayloadRefresh();
   }
 
   deleteCustomGenre(inputItem: string): any {
     this.customGenres = this.customGenres.filter(item => item !== inputItem);
+    this.onPayloadRefresh();
   }
 
   // onConfigureRequestSend(): any {
@@ -75,4 +123,40 @@ export class GenreSelectionComponent implements OnInit {
   //   };
   //   console.log(body);
   // }
+
+  onPayloadRefresh() {
+    const payload: PreferencePayload = {
+      genres: [],
+      sentiments: [],
+    }
+
+    const checkedGenres: string[] = [];
+
+    for (const genre of this.genres) {
+      if (genre.checked) {
+        checkedGenres.push(genre.name);
+      }
+    }
+
+    for (const genre of this.customGenres) {
+      checkedGenres.push(genre);
+    }
+
+    const checkedSentiments: string[] = [];
+
+    for (const sentiment of this.sentiments) {
+      if (sentiment.checked) {
+        checkedSentiments.push(sentiment.name);
+      }
+    }
+
+    for (const sentiment of this.customSentiments) {
+      checkedSentiments.push(sentiment);
+    }
+
+    payload.genres = checkedGenres;
+    payload.sentiments = checkedSentiments;
+
+    this.payloadEmitter.emit(payload);
+  }
 }
