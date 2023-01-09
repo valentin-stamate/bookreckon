@@ -13,8 +13,8 @@ config();
 const env = process.env;
 
 const app = express();
-const port = env.PORT || 8080;
-const host = `http://localhost:${port}`
+const port = env.PORT || 8090;
+const host = `http://0.0.0.0:${port}`
 
 // populateDatabase()
 //     .then(() => {
@@ -50,6 +50,8 @@ app.post('/api/user/login', Middleware.visitorMiddleware, UserController.loginUs
 app.post('/api/user/signup', Middleware.visitorMiddleware, UserController.signupUser);
 app.put('/api/user/edit-preference', Middleware.userMiddleware, UserController.editUserPreference);
 app.get('/api/user/recommendations', Middleware.userMiddleware, RecommendationController.getRecommendations);
+app.post('/api/user/base-recommendations', RecommendationController.getBaseRecommendation);
+app.post('/api/user/book-recommendations', Middleware.userMiddleware, RecommendationController.getBooksRecommendationBasedOnBook);
 app.get(`/api/user/info`, Middleware.userMiddleware, UserController.getUserInfo);
 app.get('/api/book/:bookId', Middleware.userMiddleware, BookController.getBook);
 
@@ -59,5 +61,5 @@ app.get('/api/book/:bookId', Middleware.userMiddleware, BookController.getBook);
 app.use(Middleware.errorHandler);
 
 app.listen(port, () => {
-    console.log(`Server started at ${host}`);
+    console.log(`INFO\tServer successfully started. You can talk with it at ${host}.`);
 });

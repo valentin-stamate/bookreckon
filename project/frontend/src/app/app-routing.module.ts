@@ -8,6 +8,7 @@ import {BookComponent} from "./pages/book/book.component";
 import {GenreSelectionPageComponent} from "./pages/genre-selection-page/genre-selection-page.component";
 
 const routes: Routes = [
+  {path: '', component: LoginComponent},
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
   {path: 'genre-selection', component: GenreSelectionPageComponent},

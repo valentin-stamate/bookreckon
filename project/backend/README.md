@@ -1,6 +1,6 @@
 # BookReckon - Backend
 
-Before running the server run this: `npx prisma migrate dev --name init`
+In order to initialize the tables from the database run: `npx prisma migrate dev --name init`
 
 After this, in order to populate the database uncomment in server.ts the lines that do that.
 
