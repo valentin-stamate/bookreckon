@@ -13,6 +13,7 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+namespace: bookreckon
 
 environment:
   connectionStringSecret:
@@ -43,7 +44,7 @@ securityContext: {}
 
 service:
   type: NodePort
-  port: 8080
+  port: 8090
 
 ingress:
   enabled: false

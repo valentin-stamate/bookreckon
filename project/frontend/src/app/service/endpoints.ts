@@ -1,6 +1,6 @@
 
 export class Endpoints {
-  static HOST: string = "http://localhost:8090";
+  static HOST: string = "http://backend:8090";
 
   static LOGIN = `${Endpoints.HOST}/api/user/login`;
   static SIGNUP = `${Endpoints.HOST}/api/user/signup`;
