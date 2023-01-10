@@ -7,18 +7,22 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db import DatabaseError, transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
 from django.db.models import Avg
+from django.core import serializers
+import json
 
 from jsonfield import JSONField
 import random
 
 from typing import List
-from security.utils import AESCipher
+
+from crypto_util.AESCipher import AESCipher
+# from security.utils import AESCipher
 
 class Book(models.Model):
     title = models.TextField()
@@ -72,15 +76,15 @@ class Book(models.Model):
     def encrypt_genres(self, key: bytes) -> List[bytes]:
         aes = AESCipher()
         aes.new(key)
-        return list(aes.encrypt(self.genre))
+        return list(aes.encrypt(self.genre.encode()))
 
     def encrypt_rest(self, key: bytes):
         aes = AESCipher()
         aes.new(key)
 
         pt = Book.objects.get(pk=self.pk)
-
-        return aes.encrypt(pt.encode())
+        data = serializers.serialize("json", [pt])
+        return aes.encrypt(data.encode())
 
     class Meta:
         managed = False
@@ -266,13 +270,28 @@ def cache_users(sender, instance, **kwargs):
     users = User.objects.all()
     cache.set('users', users)
 
+@receiver(post_delete, sender=User)
+def delete_cache_users(sender, instance, **kwargs):
+    users = User.objects.all()
+    cache.set('users', users)
+
 @receiver(post_save, sender=Recommendation)
 def cache_recommendations(sender, instance, **kwargs):
     recommendations = Recommendation.objects.all()
     cache.set('recommendations', recommendations)
 
+@receiver(post_delete, sender=Recommendation)
+def delete_cache_recommendations(sender, instance, **kwargs):
+    recommendations = Recommendation.objects.all()
+    cache.set('recommendations', recommendations)
+
 @receiver(post_save, sender=UserRecommendation)
 def cache_user_recommendations(sender, instance, **kwargs):
+    recommendations = UserRecommendation.objects.all()
+    cache.set('user_recommendations', recommendations)
+
+@receiver(post_delete, sender=UserRecommendation)
+def delete_cache_user_recommendations(sender, instance, **kwargs):
     recommendations = UserRecommendation.objects.all()
     cache.set('user_recommendations', recommendations)
 
@@ -299,6 +318,17 @@ def update_user_recommendations(sender, instance, **kwargs):
         print('[models] Could not finish updating user recommendations.')
     cache_sentiment_preference()
 
+@receiver(post_delete, sender=SentimentPreference)
+def delete_update_user_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_user_recommendations
+            user = User.objects.get(id=instance.userid)
+            refresh_user_recommendations(user)
+    except DatabaseError:
+        print('[models] Could not finish updating user recommendations.')
+    cache_sentiment_preference()
+
 @receiver(post_save, sender=GenrePreference)
 def update_user_recommendations(sender, instance, **kwargs):
     try:
@@ -310,8 +340,29 @@ def update_user_recommendations(sender, instance, **kwargs):
         print('[models] Could not finish updating user recommendations.')
     cache_genre_preferences()
     
+@receiver(post_delete, sender=GenrePreference)
+def delete_update_user_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_user_recommendations
+            user = User.objects.get(id=instance.userid)
+            refresh_user_recommendations(user)
+    except DatabaseError:
+        print('[models] Could not finish updating user recommendations.')
+    cache_genre_preferences()
+
 @receiver(post_save, sender=Book)
 def update_recommendations(sender, instance, **kwargs):
+    try:
+        with transaction.atomic():
+            from recommendation_service_api.views import refresh_recommendations
+            refresh_recommendations()
+    except DatabaseError:
+        print('[models] Could not finish updating recommendations.')
+    cache_books()
+
+@receiver(post_delete, sender=Book)
+def delete_update_recommendations(sender, instance, **kwargs):
     try:
         with transaction.atomic():
             from recommendation_service_api.views import refresh_recommendations

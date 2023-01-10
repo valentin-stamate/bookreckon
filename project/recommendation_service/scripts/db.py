@@ -1,15 +1,14 @@
-from utils.AWSSecretKey import AWSSecretKey
-from utils.SearchableEncryption import SearchableEncryptionScheme
+from crypto_util.AWSSecretKey import AWSSecretKey
+from crypto_util.SearchableEncryption import SearchableEncryptionScheme
 from recommendation_service_api.models import Book, Recommendation
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from utils import EncryptedBook, AesPRF, RandomKeyGenerator, BookQuery, AESCipher
+from crypto_util import EncryptedBook, AesPRF, RandomKeyGenerator, BookQuery, AESCipher, AWSSecretKey
 
 def recommendation_calc():
     books = Book.json_interest_fields()
@@ -63,27 +62,27 @@ def improved_recommendation_calc(preferences, minimum_rating, genres, user_id):
     return df.head(10)
 
 def get_query(client_category):
-    key_prf = RandomKeyGenerator.generate_symmetric_key(128)
+    key_prf = RandomKeyGenerator.RandomKeyGenerator.generate_symmetric_key(128)
 
-    aes_prf = AesPRF()
+    aes_prf = AesPRF.AesPRF()
     to_query = aes_prf.generate(client_category.encode(), key_prf)
 
     return to_query, key_prf
 
-def search_recomendation(search_parameter):
+def search_recommendation(search_parameter):
     books = Book.json_interest_fields()
     df = pd.DataFrame.from_dict(books)
 
-    enc_books = [EncryptedBook(book.encrypt_genres('>u:I=A0[FFB?I%e1'), book.encrypt_rest('>u:I=A0[FFB?I%e1')) for book in books]
+    enc_books = [EncryptedBook.EncryptedBook(book.encrypt_genres(b'>u:I=A0[FFB?I%e1'), book.encrypt_rest(b'>u:I=A0[FFB?I%e1')) for book in Book.objects.all()]
     to_query, key_prf = get_query(search_parameter)
-    se = SearchableEncryptionScheme(AESCipher(), AWSSecretKey(), 128, AesPRF())
+    se = SearchableEncryptionScheme(AESCipher.AESCipher(), AWSSecretKey.AWSSecretKey(), 128, AesPRF.AesPRF())
     for enc_book in enc_books:
-        query = BookQuery(se, key_prf, enc_book, to_query)
+        query = BookQuery.BookQuery(se, key_prf, enc_book, to_query)
 
         if query.query():
             return_list = list(se.cipher.decrypt(enc_book.get_content()))
             # send content to client
-            # return return_list
+            return return_list
 
     if search_parameter is None:
         df = df.sort_values(by='Rating', ascending=False)
