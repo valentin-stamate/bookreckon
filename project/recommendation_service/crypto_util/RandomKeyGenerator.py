@@ -1,6 +1,6 @@
-from KeyGenerator import KeyGenerator
+from crypto_util.KeyGenerator import KeyGenerator
 from Crypto.Random import random
-from constants import on_exception, after_method, before_method
+from crypto_util.constants import on_exception, after_method, before_method
 
 
 class RandomKeyGenerator(KeyGenerator):

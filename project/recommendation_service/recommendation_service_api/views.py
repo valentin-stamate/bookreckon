@@ -2,14 +2,16 @@ from django.shortcuts import render
 
 # Create your views here.
 
-from rest_framework import viewsets, filters
+from rest_framework import viewsets
 from django.db import DatabaseError, transaction
-
+from django.core import serializers
+from django.http import JsonResponse
 
 from recommendation_service_api.serializers import BookSerializer, RecommendationSerializer, UserRecommendationSerializer
 from recommendation_service_api.models import Book, Recommendation, UserRecommendation, SentimentPreference, GenrePreference
 import scripts.db as rc
 import threading
+import json
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
@@ -39,11 +41,19 @@ class UserRecommendationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user_id = self.request.query_params.get('id')
-        print(user_id)
 
         queryset = UserRecommendation.get_user_recommendation(user_id)
 
         return queryset
+
+def SearchRecommendationViewSet(request):
+
+    if (request.method == "GET"):
+        #Serialize the data into json
+        data = rc.search_recommendation(request.GET.get('input', ''))
+        data = serializers.serialize("json", data)
+        # Turn the JSON data into a dict and send as JSON response
+        return JsonResponse(json.loads(data), safe=False)
 
 def refresh_recommendations_thread():
     results = rc.recommendation_calc()
