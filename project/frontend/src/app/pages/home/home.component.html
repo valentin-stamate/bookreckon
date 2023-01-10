@@ -13,11 +13,11 @@
       <a *ngFor="let book of books" href="/book?id={{book.id}}">
         <div class="shadow rounded overflow-hidden">
           <div>
-            <img src="{{book.photo}}" alt="">
+            <img src="{{book.cover}}" alt="">
           </div>
           <div class="p-4">
             <div class="font-medium">{{book.title}}</div>
-            <div class="text-sm">Author: {{book.authors.join(' ')}}</div>
+            <div class="text-sm">Author: {{book.authors}}</div>
             <div class="text-sm">Genre: {{book.genre}}</div>
           </div>
         </div>

@@ -14,7 +14,9 @@ import {Cookies, CookieService} from "../../service/cookie.service";
 export class BookComponent {
 
   book: Book = {} as any;
+  reccomendations: Book[] = [];
   youtubeUrl: SafeUrl = '';
+  youtubeAudioUrl: SafeUrl = '';
 
   constructor(private _sanitizer: DomSanitizer, private activatedRoute: ActivatedRoute) { }
 
@@ -29,6 +31,20 @@ export class BookComponent {
       });
       this.book = result.data;
 
+      const genre = this.book.genre;
+      const bookId = this.book.id;
+
+      const result2 = await axios.get(`http://localhost:8000/api/recommendation?genre=${genre}&id=${bookId}`);
+      const data2 = result2.data[0];
+      const list = data2.recommendations as string;
+      const ids = JSON.parse(list);
+
+      const allMovies = (await axios.get('http://localhost:8000/api/books')).data;
+      const selectedMovies = allMovies.filter((item: any) => {
+        return ids.includes(item.id);
+      });
+
+      this.reccomendations = selectedMovies;
       this.onFetchBook();
     });
   }
@@ -42,8 +58,12 @@ export class BookComponent {
       this.youtubeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 
-    console.log(this.youtubeUrl)
+    const matches2 = this.book.audioBook.split(/v=/g);
 
+    if (matches2 != null) {
+      const url = `https://www.youtube.com/embed/${matches2[1]}`
+      this.youtubeAudioUrl = this._sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
   }
 
 }

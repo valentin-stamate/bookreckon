@@ -22,17 +22,16 @@ export interface Genre {
 }
 
 export interface Book {
-  id: number;
+  id?: number;
   title: string;
   genre: string;
-  authors: string[];
-  cover: string;
+  authors: string;
   audioBook: string;
-  photo: string;
+  cover: string;
   description: string;
   imdbLink: string;
-  youtubeLink: string;
   goodreadsLink: string;
+  youtubeLink: string;
   rating: number;
   ratings: number;
   reviews: number;
