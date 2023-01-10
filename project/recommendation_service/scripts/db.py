@@ -58,7 +58,7 @@ def improved_recommendation_calc(preferences, minimum_rating, genres, user_id):
 
     df['similarity'] = similarities
     # Sort the DataFrame by the similarity column in descending order
-    df = df.sort_values(by='similarities', ascending=False)
+    df = df.sort_values(by='similarity', ascending=False)
     return df.head(10)
 
 def get_query(client_category):

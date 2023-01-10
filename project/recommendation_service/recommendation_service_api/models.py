@@ -115,6 +115,9 @@ class GenrePreference(models.Model):
             return genres
         return None
 
+    def __str__(self) -> str:
+        return self.name
+
     class Meta:
         managed = False
         db_table = 'GenrePreference'
@@ -141,6 +144,9 @@ class SentimentPreference(models.Model):
         if len(preferences) > 0:
             return preferences
         return None
+
+    def __str__(self) -> str:
+        return self.name + ' ' + str(self.userid)
 
     class Meta:
         managed = False
@@ -312,7 +318,7 @@ def update_user_recommendations(sender, instance, **kwargs):
     try:
         with transaction.atomic():
             from recommendation_service_api.views import refresh_user_recommendations
-            user = User.objects.get(id=instance.userid)
+            user = User.objects.get(id=instance.id)
             refresh_user_recommendations(user)
     except DatabaseError:
         print('[models] Could not finish updating user recommendations.')
@@ -323,7 +329,7 @@ def delete_update_user_recommendations(sender, instance, **kwargs):
     try:
         with transaction.atomic():
             from recommendation_service_api.views import refresh_user_recommendations
-            user = User.objects.get(id=instance.userid)
+            user = User.objects.get(id=instance.id)
             refresh_user_recommendations(user)
     except DatabaseError:
         print('[models] Could not finish updating user recommendations.')
@@ -334,7 +340,7 @@ def update_user_recommendations(sender, instance, **kwargs):
     try:
         with transaction.atomic():
             from recommendation_service_api.views import refresh_user_recommendations
-            user = User.objects.get(id=instance.userid)
+            user = User.objects.get(id=instance.id)
             refresh_user_recommendations(user)
     except DatabaseError:
         print('[models] Could not finish updating user recommendations.')
@@ -345,7 +351,7 @@ def delete_update_user_recommendations(sender, instance, **kwargs):
     try:
         with transaction.atomic():
             from recommendation_service_api.views import refresh_user_recommendations
-            user = User.objects.get(id=instance.userid)
+            user = User.objects.get(id=instance.id)
             refresh_user_recommendations(user)
     except DatabaseError:
         print('[models] Could not finish updating user recommendations.')
