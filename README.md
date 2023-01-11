@@ -20,3 +20,4 @@
 ## Links:
 * Google Drive: https://drive.google.com/drive/folders/1fOQMC5bEe7NE353b8plB_wfglchu08Ej
 * ASANA Board: https://app.asana.com/0/1203097656530726/board
+* Technical Report: https://docs.google.com/document/d/1ZI2kaCfWPZoFCz_I29b8gHvuyLQDXWA8HZ9992wIoHU/edit?usp=sharing
